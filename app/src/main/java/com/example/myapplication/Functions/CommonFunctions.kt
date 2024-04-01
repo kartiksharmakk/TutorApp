@@ -1,18 +1,31 @@
 package com.example.myapplication.Functions
 
+import android.Manifest
+import android.app.Activity
+import android.app.AlertDialog
 import android.app.DatePickerDialog
 import android.content.Context
+import android.content.Intent
+import android.content.pm.PackageManager
+import android.net.Uri
+import android.os.Bundle
+import android.provider.Settings
 import android.view.ViewTreeObserver
 import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.Toast
-import androidx.core.content.ContentProviderCompat.requireContext
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
+import androidx.fragment.app.FragmentManager
 import java.util.Calendar
 
 object CommonFunctions {
+    private const val PERMISSION_REQUEST_CODE = 1000
     fun getToastShort(context: Context, text: String){
         Toast.makeText(context, text, Toast.LENGTH_SHORT).show()
     }
@@ -68,4 +81,97 @@ object CommonFunctions {
             },year,month,day)
         datePickerDialog.show()
     }
+
+    fun loadFragmentFromActivity(frameLayout: Int, fragment: Fragment, fragmentManager: FragmentManager){
+        val frag = fragmentManager.beginTransaction()
+        frag.replace(frameLayout, fragment)
+        frag.commit()
+    }
+    fun loadFragmentFromFragment(frameLayout: Int,  fragment: Fragment, activity: FragmentActivity){
+        val frag = activity.supportFragmentManager.beginTransaction()
+        frag.replace(frameLayout, fragment)
+        frag.commit()
+
+    }
+
+    fun loadFragmentFromFragment(frameLayout: Int, fragment: Fragment, activity: FragmentActivity, bundle: Bundle){
+        val frag = activity.supportFragmentManager.beginTransaction()
+        fragment.arguments = bundle
+        frag.replace(frameLayout, fragment)
+        frag.commit()
+    }
+
+
+    fun getPermissions(activity: FragmentActivity, requiredPermissions: Array<String>) {
+        val missingPermissions = ArrayList<String>()
+
+        for (permission in requiredPermissions) {
+            if (ContextCompat.checkSelfPermission(activity, permission) != PackageManager.PERMISSION_GRANTED) {
+                missingPermissions.add(permission)
+            }
+        }
+
+        if (missingPermissions.isNotEmpty()) {
+            ActivityCompat.requestPermissions(activity, missingPermissions.toTypedArray(), PERMISSION_REQUEST_CODE)
+        }
+    }
+
+    fun onRequestPermissionsResult(activity: FragmentActivity, requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        if (requestCode == PERMISSION_REQUEST_CODE) {
+            var allPermissionsGranted = true
+            for (result in grantResults) {
+                if (result != PackageManager.PERMISSION_GRANTED) {
+                    allPermissionsGranted = false
+                    break
+                }
+            }
+
+            if (!allPermissionsGranted) {
+                showPermissionDialog(activity, permissions)
+            }
+        }
+    }
+
+    private fun showPermissionDialog(activity: FragmentActivity, permissions: Array<out String>) {
+        for (permission in permissions) {
+            val title: String
+            val message: String
+
+            when (permission) {
+                Manifest.permission.INTERNET -> {
+                    title = "Internet Permissions Required"
+                    message = "This app requires internet permissions to function properly"
+                }
+                Manifest.permission.ACCESS_NETWORK_STATE -> {
+                    title = "Network State Permissions Required"
+                    message = "This app requires network state permission to function properly"
+                }
+                Manifest.permission.POST_NOTIFICATIONS -> {
+                    title = "Notification Permission Required"
+                    message = "This app requires Notification permission to function properly."
+                }
+                else -> {
+                    title = ""
+                    message = ""
+                }
+            }
+
+            AlertDialog.Builder(activity)
+                .setTitle(title)
+                .setMessage(message)
+                .setPositiveButton("Grant") { _, _ ->
+                    val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+                    val uri = Uri.fromParts("package", activity.packageName, null)
+                    intent.data = uri
+                    activity.startActivity(intent)
+
+                }
+                .setNegativeButton("Cancel") { _, _ ->
+
+                }
+                .setCancelable(false)
+                .show()
+        }
+    }
 }
+

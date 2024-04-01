@@ -6,21 +6,39 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.example.myapplication.Authentication.SignUp.SignupFragment
+import com.example.myapplication.Functions.CommonFunctions
+import com.example.myapplication.Functions.CommonFunctions.getPermissions
+import android.Manifest
+import android.text.method.PasswordTransformationMethod
+import android.view.WindowManager
+import com.example.myapplication.Functions.CommonFunctions.getToastShort
+import com.example.myapplication.Functions.CommonFunctions.loadFragmentFromFragment
 import com.example.myapplication.R
 import com.example.myapplication.databinding.FragmentSigninBinding
 
 class SigninFragment : Fragment() {
     lateinit var binding: FragmentSigninBinding
+    var isPassVisible = false
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentSigninBinding.inflate(inflater,container,false)
-        binding.txtSignUp.setOnClickListener {
-            signUp()
+        activity?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN)
+        getPermissions(requireActivity(), arrayOf(
+            Manifest.permission.INTERNET,
+            Manifest.permission.ACCESS_NETWORK_STATE,
+            Manifest.permission.POST_NOTIFICATIONS,
+        ))
+
+        binding.imgShowPassSignIn.setOnClickListener {
+            showHidePassowrd()
         }
-        binding.txtForgotPassword.setOnClickListener {
-            forgotPass()
+        binding.txtSignUp.setOnClickListener {
+            loadFragmentFromFragment(R.id.authFrame, SignupFragment(), requireActivity())
+        }
+        binding.txtForgotSignIn.setOnClickListener {
+            loadFragmentFromFragment(R.id.authFrame, ForgotFragment(), requireActivity())
         }
         binding.btnSignIn.setOnClickListener {
             login()
@@ -29,30 +47,41 @@ class SigninFragment : Fragment() {
     }
     fun isEmpty(): Boolean{
         var empty = false
-        if(binding.edtSignInEmail.text.trim().toString().isEmpty()){
+        if(binding.edtEmailSignIn.text.trim().toString().isEmpty()){
             empty = true
-            binding.edtSignInEmail.error = "Email is required"
+            binding.edtEmailSignIn.error = "Email is required"
         }
-        if(binding.edtSignInPassword.text.trim().toString().isEmpty()){
+        if(binding.edtPasswordSignIn.text.trim().toString().isEmpty()){
             empty = true
-            binding.edtSignInPassword.error = "Password is required"
+            binding.edtPasswordSignIn.error = "Password is required"
         }
         return empty
     }
     fun login(){
         if(!isEmpty()){
-
+            val email = binding.edtEmailSignIn.text.toString().trim()
+            val password = binding.edtPasswordSignIn.text.toString().trim()
+            getToastShort(requireContext(),"Logging in as ${email}")
         }
     }
 
-    fun signUp(){
-        val frag = requireActivity().supportFragmentManager.beginTransaction()
-        frag.replace(R.id.authFrame, SignupFragment())
-        frag.commit()
+    fun showHidePassowrd(){
+        if(isPassVisible){
+            binding.imgShowPassSignIn.setImageResource(R.drawable.showpassword)
+            binding.edtPasswordSignIn.transformationMethod = PasswordTransformationMethod.getInstance()
+        }else{
+            binding.imgShowPassSignIn.setImageResource(R.drawable.hidepassword)
+            binding.edtPasswordSignIn.transformationMethod = null
+        }
+        isPassVisible = !isPassVisible
     }
-    fun forgotPass(){
-        val frag = requireActivity().supportFragmentManager.beginTransaction()
-        frag.replace(R.id.authFrame, ForgotFragment())
-        frag.commit()
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        CommonFunctions.onRequestPermissionsResult(requireActivity(), requestCode, permissions, grantResults)
     }
 }

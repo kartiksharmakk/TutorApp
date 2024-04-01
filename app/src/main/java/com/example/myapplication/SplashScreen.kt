@@ -22,6 +22,7 @@ class SplashScreen : AppCompatActivity() {
             WindowManager.LayoutParams.FLAG_FULLSCREEN,
             WindowManager.LayoutParams.FLAG_FULLSCREEN
         )
+        binding.imgSplash.setImageResource(R.drawable.logo)
         anim = AnimationUtils.loadAnimation(applicationContext,R.anim.splash_anim)
         binding.imgSplash.startAnimation(anim)
         Handler().postDelayed({
