@@ -55,4 +55,5 @@ dependencies {
 
     implementation("com.hbb20:ccp:2.7.1")
     implementation("de.nycode:bcrypt:2.2.0")
+    implementation("com.github.aabhasr1:OtpView:v1.1.2")
 }
