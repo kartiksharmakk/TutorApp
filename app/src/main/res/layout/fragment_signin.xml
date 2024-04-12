@@ -135,10 +135,10 @@
 
         <ImageView
             android:id="@+id/imgShowPassSignIn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
             android:layout_marginEnd="42dp"
-            android:src="@drawable/hidepassword"
+            android:src="@drawable/showpassword"
             app:layout_constraintBottom_toBottomOf="@+id/edtPasswordSignIn"
             app:layout_constraintEnd_toEndOf="@+id/edtPasswordSignIn"
             app:layout_constraintTop_toTopOf="@+id/edtPasswordSignIn" />

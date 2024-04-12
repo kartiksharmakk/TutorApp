@@ -24,7 +24,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
-        android:id="@+id/imageView"
+        android:id="@+id/imgBackSignUp"
         android:layout_width="45dp"
         android:layout_height="45dp"
         android:layout_marginTop="16dp"
@@ -145,8 +145,8 @@
 
             <ImageView
                 android:id="@+id/imgShowPasswordSignUp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
                 android:layout_marginEnd="42dp"
                 android:src="@drawable/showpassword"
                 app:layout_constraintBottom_toBottomOf="@+id/edtPasswordSignUp"
@@ -195,8 +195,8 @@
 
             <ImageView
                 android:id="@+id/imgShowConfirmPasswordSignUp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
                 android:layout_marginEnd="42dp"
                 android:src="@drawable/showpassword"
                 app:layout_constraintBottom_toBottomOf="@+id/edtConfirmPasswordSignUp"
