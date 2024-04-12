@@ -11,6 +11,7 @@ import com.example.myapplication.Functions.CommonFunctions.getPermissions
 import android.Manifest
 import android.text.method.PasswordTransformationMethod
 import android.view.WindowManager
+import androidx.navigation.fragment.findNavController
 import com.example.myapplication.Functions.CommonFunctions.getToastShort
 import com.example.myapplication.Functions.CommonFunctions.loadFragmentFromFragment
 import com.example.myapplication.R
@@ -18,6 +19,7 @@ import com.example.myapplication.databinding.FragmentSigninBinding
 
 class SigninFragment : Fragment() {
     lateinit var binding: FragmentSigninBinding
+
     var isPassVisible = false
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -35,10 +37,10 @@ class SigninFragment : Fragment() {
             showHidePassowrd()
         }
         binding.txtSignUp.setOnClickListener {
-            loadFragmentFromFragment(R.id.authFrame, SignupFragment(), requireActivity())
+            findNavController().navigate(R.id.signupFragment)
         }
         binding.txtForgotSignIn.setOnClickListener {
-            loadFragmentFromFragment(R.id.authFrame, ForgotFragment(), requireActivity())
+            findNavController().navigate(R.id.forgotPasswordFragment)
         }
         binding.btnSignIn.setOnClickListener {
             login()

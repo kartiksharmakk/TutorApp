@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    app:startDestination="@id/signInFragment"
+    android:id="@+id/nav_graph">
+    <fragment
+        android:id="@+id/signInFragment"
+        android:name="com.example.myapplication.Authentication.SignIn.SigninFragment"
+        android:label="SignInFragment"
+        tools:layout="@layout/fragment_signin"/>
+    <fragment
+        android:id="@+id/signupFragment"
+        android:name="com.example.myapplication.Authentication.SignUp.SignupFragment"
+        android:label="SignUpFragment"
+        tools:layout="@layout/fragment_signup"/>
+    <fragment
+        android:id="@+id/verifyPhoneFragment"
+        android:name="com.example.myapplication.Authentication.SignUp.VerifyPhoneFragment"
+        android:label="VerifyPhoneFragment"
+        tools:layout="@layout/fragment_verify_phone"/>
+    <fragment
+        android:id="@+id/resetFragment"
+        android:name="com.example.myapplication.Authentication.SignIn.ResestFragment"
+        android:label="ResetFragment"
+        tools:layout="@layout/fragment_resest"/>
+    <fragment
+        android:id="@+id/forgotPasswordFragment"
+        android:name="com.example.myapplication.Authentication.SignIn.ForgotFragment"
+        android:label="ForgotPasswordFragment"
+        tools:layout="@layout/fragment_forgot"/>
+</navigation>

@@ -64,12 +64,15 @@
                 android:layout_marginEnd="16dp"
                 android:background="@drawable/rect_white"
                 android:orientation="horizontal"
+                android:gravity="center"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
 
                 <com.hbb20.CountryCodePicker
                     android:id="@+id/ccpSignUp"
+                    app:ccp_showFlag="false"
+                    android:gravity="center"
                     android:layout_width="wrap_content"
                     android:layout_height="45dp" />
 
