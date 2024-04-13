@@ -30,11 +30,10 @@ class SignupFragment : Fragment() {
             showHideConfirmPassword()
         }
         binding.imgBackSignUp.setOnClickListener {
-            findNavController().navigate(R.id.signInFragment)
             findNavController().popBackStack()
         }
-        binding.btnSignUp.setOnClickListener {
-            signUp()
+        binding.btnVerifyNumber.setOnClickListener {
+            generateOtp()
         }
 
         return binding.root
@@ -63,18 +62,19 @@ class SignupFragment : Fragment() {
         }
         if(binding.edtPasswordSignUp.text.toString() != "" &&
             binding.edtPasswordSignUp.text.toString().trim() != binding.edtConfirmPasswordSignUp.text.toString().trim()){
+            emp = true
             binding.edtPasswordSignUp.error = "Passwords don't match"
             binding.edtConfirmPasswordSignUp.error = "Passwords don't match"
         }
         return emp
     }
-    fun signUp(){
+    fun generateOtp(){
         if(!isEmpty()){
             val email = binding.edtEmailSignUp.text.toString().trim()
             val phone = binding.edtPhoneSignUp.text.toString().trim()
             val countryCode = binding.ccpSignUp.selectedCountryCodeWithPlus
             viewModel.updateCredentials(email, countryCode, phone)
-            findNavController().navigate(R.id.signInFragment)
+            findNavController().navigate(R.id.verifyPhoneFragment)
         }
     }
 
@@ -97,5 +97,6 @@ class SignupFragment : Fragment() {
             binding.imgShowConfirmPasswordSignUp.setImageResource(R.drawable.hidepassword)
             binding.edtConfirmPasswordSignUp.transformationMethod = null
         }
+        isConfirmPassVisible = !isConfirmPassVisible
     }
 }

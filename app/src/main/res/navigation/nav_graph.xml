@@ -29,4 +29,9 @@
         android:name="com.example.myapplication.Authentication.SignIn.ForgotFragment"
         android:label="ForgotPasswordFragment"
         tools:layout="@layout/fragment_forgot"/>
+    <action
+        android:id="@+id/action_verifyPhoneFragment_to_signInFragment"
+        app:destination="@id/signInFragment"
+        app:popUpTo="@id/signupFragment"
+        app:popUpToInclusive="true"/>
 </navigation>

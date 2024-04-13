@@ -1,4 +1,5 @@
 package com.example.myapplication.Data
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -21,11 +22,15 @@ class AuthenticationViewModel: ViewModel() {
     val gender: LiveData<String> get() = mutableGender
     val userType: LiveData<String> get() = mutableUserType
 
-    fun updateCredentials(email: String, code: String, phone: String){
+    fun updateCredentials(email: String, code: String, phn: String){
         viewModelScope.launch {
             mutableEmail.value = email
             mutableCountryCode.value = code
-            mutablePhone.value = phone
+            mutablePhone.value = phn
         }
+        Log.d("ViewModel","UpdateCredentials : " +
+                "\nEmail : ${username.value}" +
+                "\ncode : ${countryCode.value}" +
+                "\nPhone : ${phone.value}")
     }
 }

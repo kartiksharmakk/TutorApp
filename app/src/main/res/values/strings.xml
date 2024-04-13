@@ -3,5 +3,6 @@
     <string name="welcome">Welcome to Uplift</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="account_signup">Don\'t have an account? Sign up...</string>
+    <string name="verifyPhone">Enter an OTP sent to your phone number</string>
     <string name="forgot_password">Forgot password?</string>
 </resources>
