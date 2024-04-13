@@ -11,10 +11,16 @@ import androidx.navigation.fragment.findNavController
 import com.example.myapplication.Data.AuthenticationViewModel
 import com.example.myapplication.R
 import com.example.myapplication.databinding.FragmentSignupBinding
+import com.google.firebase.FirebaseException
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.PhoneAuthCredential
+import com.google.firebase.auth.PhoneAuthOptions
+import com.google.firebase.auth.PhoneAuthProvider
+import java.util.concurrent.TimeUnit
 
 class SignupFragment : Fragment() {
     lateinit var binding: FragmentSignupBinding
-
+    lateinit var auth: FirebaseAuth
     val viewModel: AuthenticationViewModel by activityViewModels<AuthenticationViewModel>()
     private var isPassVisible = false
     private var isConfirmPassVisible = false
@@ -23,6 +29,7 @@ class SignupFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentSignupBinding.inflate(inflater, container, false)
+        auth = FirebaseAuth.getInstance()
         binding.imgShowPasswordSignUp.setOnClickListener {
             showHidePassowrd()
         }
@@ -73,8 +80,33 @@ class SignupFragment : Fragment() {
             val email = binding.edtEmailSignUp.text.toString().trim()
             val phone = binding.edtPhoneSignUp.text.toString().trim()
             val countryCode = binding.ccpSignUp.selectedCountryCodeWithPlus
-            viewModel.updateCredentials(email, countryCode, phone)
+            val pass = binding.edtPasswordSignUp.text.toString().trim()
+            startphonenumberVerification(countryCode+phone)
+            viewModel.updateCredentials(email, countryCode, phone, pass)
             findNavController().navigate(R.id.verifyPhoneFragment)
+        }
+    }
+
+    fun startphonenumberVerification(phoneNumber: String){
+        val options = PhoneAuthOptions.newBuilder(auth)
+            .setPhoneNumber(phoneNumber)
+            .setTimeout(60L, TimeUnit.SECONDS)
+            .setActivity(requireActivity())
+            .setCallbacks(callbacks)
+            .build()
+        PhoneAuthProvider.verifyPhoneNumber(options)
+    }
+
+    private val callbacks = object: PhoneAuthProvider.OnVerificationStateChangedCallbacks(){
+        override fun onVerificationCompleted(p0: PhoneAuthCredential) {
+        }
+
+        override fun onVerificationFailed(p0: FirebaseException) {
+        }
+
+        override fun onCodeSent(p0: String, p1: PhoneAuthProvider.ForceResendingToken) {
+            val action = SignupFragmentDirections.actionSignupFragmentToVerifyPhoneFragment()
+            findNavController().navigate(action)
         }
     }
 
