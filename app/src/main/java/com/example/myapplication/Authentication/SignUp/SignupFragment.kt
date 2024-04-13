@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.example.myapplication.Data.AuthenticationViewModel
+import com.example.myapplication.Data.Prefs
 import com.example.myapplication.R
 import com.example.myapplication.databinding.FragmentSignupBinding
 import com.google.firebase.FirebaseException
@@ -105,6 +106,7 @@ class SignupFragment : Fragment() {
         }
 
         override fun onCodeSent(p0: String, p1: PhoneAuthProvider.ForceResendingToken) {
+            Prefs.saveVerificationId(requireContext(),p0)
             val action = SignupFragmentDirections.actionSignupFragmentToVerifyPhoneFragment()
             findNavController().navigate(action)
         }
