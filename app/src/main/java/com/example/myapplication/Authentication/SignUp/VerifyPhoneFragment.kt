@@ -52,9 +52,9 @@ class VerifyPhoneFragment : Fragment() {
     fun signUpWithEmail(){
         auth.createUserWithEmailAndPassword(email, pass).addOnCompleteListener {
             if(it.isSuccessful){
-                Toast.makeText(requireContext(), "Sign up successful", Toast.LENGTH_SHORT).show()
+                //Toast.makeText(requireContext(), "Sign up successful", Toast.LENGTH_SHORT).show()
             }else{
-                Toast.makeText(requireContext(), "Error " + it.exception, Toast.LENGTH_SHORT).show()
+                //Toast.makeText(requireContext(), "Error " + it.exception, Toast.LENGTH_SHORT).show()
             }
         }
     }

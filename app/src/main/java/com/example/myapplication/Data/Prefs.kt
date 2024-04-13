@@ -19,7 +19,10 @@ object Prefs {
         set(value) = sharedPreferences.edit().putString(KEY_USERNAME, value).apply()
 
     private fun getPrefs(context: Context): SharedPreferences {
-        return context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
+        if (!::sharedPreferences.isInitialized) {
+            sharedPreferences = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
+        }
+        return sharedPreferences
     }
 
     fun saveVerificationId(context: Context, verificationId: String) {
