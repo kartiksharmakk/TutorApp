@@ -52,6 +52,7 @@ class VerifyPhoneFragment : Fragment() {
     fun signUpWithEmail(){
         auth.createUserWithEmailAndPassword(email, pass).addOnCompleteListener {
             if(it.isSuccessful){
+                sendVerificationMail()
                 //Toast.makeText(requireContext(), "Sign up successful", Toast.LENGTH_SHORT).show()
             }else{
                 //Toast.makeText(requireContext(), "Error " + it.exception, Toast.LENGTH_SHORT).show()
@@ -59,6 +60,16 @@ class VerifyPhoneFragment : Fragment() {
         }
     }
 
+    fun sendVerificationMail(){
+        val user = auth?.currentUser
+        user?.sendEmailVerification()?.addOnCompleteListener {
+            if(it.isSuccessful){
+
+            }else{
+
+            }
+        }
+    }
     fun retrieveVerificationId(){
         storedVerificationId = Prefs.getVerificationId(requireContext())!!
     }
