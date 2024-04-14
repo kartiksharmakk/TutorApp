@@ -96,6 +96,16 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/edtEmailSignIn" />
 
+        <ImageView
+            android:id="@+id/imgShowPassSignIn"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_marginEnd="42dp"
+            android:src="@drawable/showpassword"
+            app:layout_constraintBottom_toBottomOf="@+id/edtPasswordSignIn"
+            app:layout_constraintEnd_toEndOf="@+id/edtPasswordSignIn"
+            app:layout_constraintTop_toTopOf="@+id/edtPasswordSignIn" />
+
         <TextView
             android:id="@+id/txtForgotSignIn"
             android:layout_width="wrap_content"
@@ -106,6 +116,19 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/edtPasswordSignIn" />
+
+        <TextView
+            android:id="@+id/txtSendVerificationLink"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:text="Resend verification link"
+            android:visibility="gone"
+            android:fontFamily="sans-serif-black"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/txtForgotSignIn" />
+
 
         <Button
             android:id="@+id/btnSignIn"
@@ -133,15 +156,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/btnSignIn" />
 
-        <ImageView
-            android:id="@+id/imgShowPassSignIn"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
-            android:layout_marginEnd="42dp"
-            android:src="@drawable/showpassword"
-            app:layout_constraintBottom_toBottomOf="@+id/edtPasswordSignIn"
-            app:layout_constraintEnd_toEndOf="@+id/edtPasswordSignIn"
-            app:layout_constraintTop_toTopOf="@+id/edtPasswordSignIn" />
+
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

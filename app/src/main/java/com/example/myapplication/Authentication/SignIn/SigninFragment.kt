@@ -9,19 +9,32 @@ import com.example.myapplication.Authentication.SignUp.SignupFragment
 import com.example.myapplication.Functions.CommonFunctions
 import com.example.myapplication.Functions.CommonFunctions.getPermissions
 import android.Manifest
+import android.content.Intent
 import android.text.method.PasswordTransformationMethod
 import android.view.WindowManager
 import android.widget.Toast
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
+import com.example.myapplication.Data.AuthenticationViewModel
 import com.example.myapplication.Functions.CommonFunctions.getToastShort
 import com.example.myapplication.Functions.CommonFunctions.loadFragmentFromFragment
 import com.example.myapplication.R
+import com.example.myapplication.Tutor.TutorHome
 import com.example.myapplication.databinding.FragmentSigninBinding
+import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.database
+import java.util.Locale.IsoCountryCode
 
 class SigninFragment : Fragment() {
     lateinit var binding: FragmentSigninBinding
     lateinit var auth: FirebaseAuth
+    lateinit var firebaseDatabase: FirebaseDatabase
+    lateinit var databaseReference: DatabaseReference
+    lateinit var countryCode: String
+    lateinit var phoneNumber: String
     var isPassVisible = false
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -29,6 +42,9 @@ class SigninFragment : Fragment() {
     ): View? {
         binding = FragmentSigninBinding.inflate(inflater,container,false)
         auth = FirebaseAuth.getInstance()
+        firebaseDatabase = Firebase.database
+        databaseReference = firebaseDatabase.getReference("User Details")
+
         activity?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN)
         getPermissions(requireActivity(), arrayOf(
             Manifest.permission.INTERNET,
@@ -41,6 +57,9 @@ class SigninFragment : Fragment() {
         }
         binding.txtSignUp.setOnClickListener {
             findNavController().navigate(R.id.signupFragment)
+        }
+        binding.txtSendVerificationLink.setOnClickListener {
+            sendVerificationLink()
         }
         binding.txtForgotSignIn.setOnClickListener {
             findNavController().navigate(R.id.forgotPasswordFragment)
@@ -88,9 +107,13 @@ class SigninFragment : Fragment() {
             try{
                 if (it.isSuccessful){
                     if(auth.currentUser!!.isEmailVerified){
+                        updateVerificationInDatabase(true)
+                        val intent = Intent(requireContext(), TutorHome::class.java)
+                        startActivity(intent)
                         Toast.makeText(requireContext(),"Sign In successful",Toast.LENGTH_SHORT).show()
                     }else{
                         Toast.makeText(requireContext(),"Please verify your email",Toast.LENGTH_SHORT).show()
+                        binding.txtSendVerificationLink.visibility = View.VISIBLE
                     }
                 }else{
                     Toast.makeText(requireContext(), "Failed to reload user", Toast.LENGTH_SHORT).show()
@@ -99,6 +122,31 @@ class SigninFragment : Fragment() {
                 Toast.makeText(requireContext(), "Error: ${e.message}", Toast.LENGTH_SHORT).show()
             }
         }
+    }
+
+    fun sendVerificationLink(){
+        val user = auth?.currentUser
+        user?.sendEmailVerification()?.addOnCompleteListener {
+            try {
+                if(it.isSuccessful){
+                    Toast.makeText(requireContext(),"Mail sent",Toast.LENGTH_SHORT).show()
+                }else{
+                    Toast.makeText(requireContext(),"Unable to send verification mail", Toast.LENGTH_SHORT).show()
+                }
+            }catch (e: Exception){
+                Toast.makeText(requireContext(),"Error : ${e.message}",Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    fun encodeEmail(email: String): String {
+        return email.replace(".", "(dot)")
+    }
+
+    fun updateVerificationInDatabase(status: Boolean){
+        val email = binding.edtEmailSignIn.text.toString().trim()
+        val email1 = encodeEmail(email)
+        databaseReference.child(email1).child("verified").setValue(true)
     }
     fun showHidePassowrd(){
         if(isPassVisible){
@@ -119,4 +167,6 @@ class SigninFragment : Fragment() {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         CommonFunctions.onRequestPermissionsResult(requireActivity(), requestCode, permissions, grantResults)
     }
+
+
 }

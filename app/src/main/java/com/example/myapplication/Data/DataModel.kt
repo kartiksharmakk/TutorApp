@@ -9,9 +9,10 @@ object DataModel{
     )
 
     data class UserCredentials(
-        val username: String,
-        val password: String,
+        val email: String,
+        val countryCode: String,
         val phone: String,
+        val isVerified: Boolean
     )
 
     data class StudentModel(
