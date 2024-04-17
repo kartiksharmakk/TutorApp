@@ -5,9 +5,10 @@
         android:title="Home"
         android:icon="@drawable/home"/>
     <item
-        android:id="@+id/st_tests"
-        android:title="Tests"
-        android:icon="@drawable/tests"/>
+        android:id="@+id/createGroup"
+        android:title="Create Group"
+        android:icon="@drawable/create_group"/>
+
     <item
         android:id="@+id/st_profile"
         android:title="Profile"

@@ -16,6 +16,7 @@ import android.widget.Toast
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.example.myapplication.Data.AuthenticationViewModel
+import com.example.myapplication.Data.Prefs
 import com.example.myapplication.Functions.CommonFunctions.getToastShort
 import com.example.myapplication.Functions.CommonFunctions.loadFragmentFromFragment
 import com.example.myapplication.R
@@ -108,6 +109,7 @@ class SigninFragment : Fragment() {
                 if (it.isSuccessful){
                     if(auth.currentUser!!.isEmailVerified){
                         updateVerificationInDatabase(true)
+                        Prefs.getLoggedIn(requireContext(),true)
                         val intent = Intent(requireContext(), TutorHome::class.java)
                         startActivity(intent)
                         Toast.makeText(requireContext(),"Sign In successful",Toast.LENGTH_SHORT).show()

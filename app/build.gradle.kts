@@ -65,4 +65,5 @@ dependencies {
     implementation("androidx.activity:activity-ktx:1.8.2")
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.4.0")
     implementation("androidx.lifecycle:lifecycle-common-java8:2.4.0")
+    implementation("com.github.Kwasow:BottomNavigationCircles-Android:1.2")
 }

@@ -10,7 +10,6 @@ object Prefs {
     private const val KEY_USERNAME = "username"
     private const val DEFAULT_USERNAME = ""
     private const val KEY_LOGGED_IN = "loggedIn"
-    private const val IS_LOGGED_IN = false
     private const val VERIFICATION_ID_KEY = "verificationId"
 
 
@@ -25,6 +24,12 @@ object Prefs {
         return sharedPreferences
     }
 
+    fun getLoggedIn(context: Context, isLogged: Boolean){
+        getPrefs(context).edit().putBoolean(KEY_LOGGED_IN, isLogged).apply()
+    }
+    fun isLoggedIn(context: Context): Boolean?{
+        return getPrefs(context).getBoolean(KEY_LOGGED_IN, false)
+    }
     fun saveVerificationId(context: Context, verificationId: String) {
         getPrefs(context).edit().putString(VERIFICATION_ID_KEY, verificationId).apply()
     }

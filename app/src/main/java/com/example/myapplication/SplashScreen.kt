@@ -8,6 +8,8 @@ import android.view.WindowManager
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import com.example.myapplication.Authentication.AuthActivity
+import com.example.myapplication.Data.Prefs
+import com.example.myapplication.Tutor.TutorHome
 import com.example.myapplication.databinding.ActivitySplashBinding
 
 class SplashScreen : AppCompatActivity() {
@@ -26,8 +28,14 @@ class SplashScreen : AppCompatActivity() {
         anim = AnimationUtils.loadAnimation(applicationContext,R.anim.splash_anim)
         binding.imgSplash.startAnimation(anim)
         Handler().postDelayed({
-            val intent = Intent(this, AuthActivity::class.java)
-            startActivity(intent)
+            val authIntent = Intent(this, AuthActivity::class.java)
+            val homeIntent = Intent(this, TutorHome::class.java)
+            val loggedIn = Prefs.isLoggedIn(this)
+            if (loggedIn!!){
+                startActivity(homeIntent)
+            }else{
+                startActivity(authIntent)
+            }
             overridePendingTransition(R.anim.slide_right,R.anim.zoom_out)
             finish()
         },3000)
