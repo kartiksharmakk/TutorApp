@@ -9,5 +9,15 @@
         android:name="com.example.myapplication.Tutor.TutorHomeFragment"
         android:label="TutorHomeFragment"
         tools:layout="@layout/fragment_tutor_home"/>
+    <fragment
+        android:id="@+id/tutorCreateTestFragment"
+        android:name="com.example.myapplication.Tutor.CreateTestFragment"
+        android:label="CreateTestFragment"
+        tools:layout="@layout/fragment_create_test"/>
+    <fragment
+        android:id="@+id/tutor_profile"
+        android:name="com.example.myapplication.Tutor.ProfileFragment"
+        android:label="TutorProfile"
+        tools:layout="@layout/fragment_profile"/>
 
 </navigation>

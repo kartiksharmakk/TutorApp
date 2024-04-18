@@ -17,5 +17,16 @@
         app:layout_constraintTop_toTopOf="parent"
         app:navGraph="@navigation/tutor_nav_graph"
         />
-
+    <com.github.kwasow.bottomnavigationcircles.BottomNavigationCircles
+        android:id="@+id/tutorBottomNav"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="start|bottom"
+        app:menu="@menu/tutor_menu"
+        app:circleColor="@color/primary"
+        app:darkIcon="true"
+        app:backgroundShape="circle"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>
