@@ -26,7 +26,7 @@ class TutorHome : AppCompatActivity() {
                     navController.navigate(R.id.tutorCreateTestFragment)
                     true
                 }
-                R.id.tutor_profile->{
+                R.id.t_profile->{
                     navController.navigate(R.id.tutor_profile)
                     true
                 }

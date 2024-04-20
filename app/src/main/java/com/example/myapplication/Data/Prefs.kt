@@ -7,7 +7,10 @@ object Prefs {
     private const val PREF_NAME = "MY_SHARED_PREFERENCES"
     private lateinit var sharedPreferences: SharedPreferences
 
+    private const val USER_IMAGE_URI = "image_uri"
+    private const val USER_EMAIL = "user_email"
     private const val KEY_USERNAME = "username"
+    private const val UNIQUE_ID = ""
     private const val DEFAULT_USERNAME = ""
     private const val KEY_LOGGED_IN = "loggedIn"
     private const val VERIFICATION_ID_KEY = "verificationId"
@@ -37,6 +40,29 @@ object Prefs {
     fun getVerificationId(context: Context): String? {
         return getPrefs(context).getString(VERIFICATION_ID_KEY, null)
     }
+
+    fun saveUID(context: Context, uid: String){
+        getPrefs(context).edit().putString(UNIQUE_ID,uid).apply()
+    }
+
+    fun getUID(context: Context): String?{
+        return getPrefs(context).getString(UNIQUE_ID, null)
+    }
+
+    fun saveUserImageURI(context: Context, uri: String){
+        getPrefs(context).edit().putString(USER_IMAGE_URI, uri).apply()
+    }
+    fun getUserImageURI(context: Context): String?{
+        return  getPrefs(context).getString(USER_IMAGE_URI, null)
+    }
+
+    fun saveUserEmailEncoded(context: Context, email: String){
+        getPrefs(context).edit().putString(USER_EMAIL, email).apply()
+    }
+    fun getUSerEmailEncoded(context: Context): String?{
+        return getPrefs(context).getString(USER_EMAIL, null)
+    }
+
     fun clearPrefs() {
         sharedPreferences.edit().clear().apply()
     }

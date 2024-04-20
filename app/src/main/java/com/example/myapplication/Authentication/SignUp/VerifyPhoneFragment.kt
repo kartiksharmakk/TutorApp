@@ -122,9 +122,10 @@ class VerifyPhoneFragment : Fragment() {
     }
 
     fun saveUserDetails(){
+        val uid = databaseReference.push().key!!
         val email1 = encodeEmail(email)
         val phoneWithCountryCode = countryCode + phoneNumber
-        val user = DataModel.UserCredentials(email1, countryCode, phoneNumber, false )
+        val user = DataModel.UserCredentials(uid,email1, countryCode, phoneWithCountryCode, false )
         val positionListener = object : ValueEventListener{
             override fun onDataChange(snapshot: DataSnapshot) {
                 try {

@@ -9,6 +9,7 @@ object DataModel{
     )
 
     data class UserCredentials(
+        val uid: String,
         val email: String,
         val countryCode: String,
         val phone: String,

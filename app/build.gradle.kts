@@ -3,6 +3,7 @@ plugins {
     id("org.jetbrains.kotlin.android")
     id("com.google.gms.google-services")
     id("androidx.navigation.safeargs.kotlin") version "2.7.7"
+    id("com.github.ben-manes.versions") version "0.39.0"
 }
 
 
@@ -14,7 +15,7 @@ android {
     defaultConfig {
         applicationId = "com.example.myapplication"
         minSdk = 24
-        targetSdk = 33
+        targetSdk = 34
         versionCode = 1
         versionName = "1.0"
 
@@ -67,4 +68,13 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.4.0")
     implementation("androidx.lifecycle:lifecycle-common-java8:2.4.0")
     implementation("com.github.Kwasow:BottomNavigationCircles-Android:1.2")
+
+    implementation("com.google.zxing:core:3.3.3")
+    //implementation("com.google.zxing:android-core:3.3.3")
+    //implementation("com.google.zxing:android-integration:3.3.3")
+    implementation("com.google.zxing:javase:3.3.3")
+    implementation("com.github.bumptech.glide:glide:4.12.0")
+    annotationProcessor("com.github.bumptech.glide:compiler:4.12.0")
+    implementation("com.github.yalantis:ucrop:2.2.6")
+
 }
