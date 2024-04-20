@@ -10,12 +10,16 @@ import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import android.provider.Settings
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.EditText
 import android.widget.PopupMenu
 import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
@@ -68,6 +72,9 @@ class ProfileFragment : Fragment() {
         }
         binding.txtGenerateQR.setOnClickListener {
             showQR(qrCodeBitmap!!)
+        }
+        binding.imgEditAbout.setOnClickListener {
+            showAboutPopUp()
         }
         return binding.root
     }
@@ -196,7 +203,6 @@ class ProfileFragment : Fragment() {
                     }
                 } ?: run {
                     Log.e("ProfileFragment","Image URI is null")
-                    // Handle the case where image URI is null
                 }
             }
 
@@ -204,21 +210,6 @@ class ProfileFragment : Fragment() {
                 Log.e("ProfileFragment", "Error fetching image URI from database: ${databaseError.message}")
             }
         })
-    /*
-        val userImageUri = Prefs.getUserImageURI(requireContext())
-        if(userImageUri != null && userImageUri.isNotEmpty()){
-            Glide.with(requireContext()).load(userImageUri).apply(RequestOptions.circleCropTransform())
-                .into(binding.imgUserImageProfile)
-        }else{
-            val defaultProfileImageRef = FirebaseStorage.getInstance().getReferenceFromUrl("gs://tutorapp-c7511.appspot.com/Default_Resources/default_user_profile_image.png")
-            defaultProfileImageRef.downloadUrl.addOnSuccessListener { uri ->
-                Glide.with(requireContext()).load(uri).apply(RequestOptions.circleCropTransform())
-                    .into(binding.imgUserImageProfile)
-            }.addOnFailureListener { exception->
-                Log.e("ProfileFragment","Error loading default profile image : ${exception.message}")
-            }
-        }
-         */
     }
     private fun pickProfilePhoto(){
         val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
@@ -321,6 +312,54 @@ class ProfileFragment : Fragment() {
             .show()
     }
 
+    fun showAboutPopUp(){
+        val dialogInflater = LayoutInflater.from(requireContext())
+        val view = dialogInflater.inflate(R.layout.custom_alert_dialog_with_edittext, null)
+
+        val editText: EditText = view.findViewById(R.id.edtCustomAlertDialog)
+        val btnUpdate: Button = view.findViewById(R.id.btnUpdateCustomAlertDialog)
+        val btnCancel: Button = view.findViewById(R.id.btnCancelAlertDialog)
+
+        val alertDialog = AlertDialog.Builder(requireContext()).setView(view)
+        .setCancelable(false).create()
+        editText.setText(binding.txtAboutProfile.text.toString().trim())
+        btnUpdate.isEnabled = false
+
+        editText.addTextChangedListener(object: TextWatcher{
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+            }
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+            }
+            override fun afterTextChanged(p0: Editable?) {
+                btnUpdate.isEnabled = p0?.isNotEmpty() ?: false
+            }
+
+        })
+        btnUpdate.setOnClickListener {
+            val aboutText = editText.text.toString().trim()
+            updateAboutSection(aboutText)
+            alertDialog.dismiss()
+        }
+        btnCancel.setOnClickListener {
+            alertDialog.dismiss()
+        }
+        alertDialog.show()
+    }
+
+    fun getAboutSection(){
+        val email = Prefs.getUSerEmailEncoded(requireContext())
+        val dbRef = databaseReference.child(email!!)
+    }
+    fun updateAboutSection(text: String){
+        val email = Prefs.getUSerEmailEncoded(requireContext())
+        val dbRef = databaseReference.child(email!!)
+        dbRef.child("about").setValue(text).addOnSuccessListener {
+            getToastShort(requireContext(), "About section updated successfully")
+        }.addOnFailureListener {
+            Log.e("ProfileFragment", "Error updating about section.")
+            getToastShort(requireContext(), "Failed to update about section")
+        }
+    }
     private fun logout(){
         try{
             auth.signOut()
