@@ -64,6 +64,7 @@ class ProfileFragment : Fragment() {
         databaseReference = firebaseDatabase.getReference("User Details")
         val uid = Prefs.getUID(requireContext())
         val qrCodeBitmap = generateQRCode(uid!!)
+        getAboutSection()
         binding.imgOptionsProfile.setOnClickListener { view->
             showPopUpOptions(view)
         }
@@ -348,7 +349,23 @@ class ProfileFragment : Fragment() {
 
     fun getAboutSection(){
         val email = Prefs.getUSerEmailEncoded(requireContext())
-        val dbRef = databaseReference.child(email!!)
+        val dbRef = databaseReference.child(email!!).child("about")
+        dbRef.addListenerForSingleValueEvent(object: ValueEventListener{
+            override fun onDataChange(snapshot: DataSnapshot) {
+                if(snapshot.exists()){
+                    val aboutText = snapshot.getValue(String::class.java)
+                    binding.txtAboutProfile.setText(aboutText)
+                }else{
+                    Log.d("ProfileFragment","About text does not exist in the database")
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                TODO("Not yet implemented")
+            }
+
+        } )
+
     }
     fun updateAboutSection(text: String){
         val email = Prefs.getUSerEmailEncoded(requireContext())
@@ -371,7 +388,6 @@ class ProfileFragment : Fragment() {
         }catch (e: Exception){
             getToastShort(requireContext(),"Error: ${e.message}")
         }
-
     }
     companion object{
         private const val STORAGE_PERMISSION_REQUEST_CODE = 2001
