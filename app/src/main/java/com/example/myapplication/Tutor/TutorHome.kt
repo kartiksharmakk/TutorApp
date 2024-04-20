@@ -23,7 +23,7 @@ class TutorHome : AppCompatActivity() {
                     true
                 }
                 R.id.createGroup -> {
-                    navController.navigate(R.id.tutorCreateTestFragment)
+                    navController.navigate(R.id.tutorCreateGroupFragment)
                     true
                 }
                 R.id.t_profile->{

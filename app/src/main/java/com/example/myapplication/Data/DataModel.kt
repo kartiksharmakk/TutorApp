@@ -17,10 +17,30 @@ object DataModel{
         val isVerified: Boolean
     )
 
-    data class StudentModel(
+    data class Group(
+        val groupId: String,
+        val groupName: String,
+        val subjectId: String,
+        val tutorId: String,
+        val students: List<String>
+    )
+
+    data class  Subjects(
+        val subjectId: String,
+        val name: String
+    )
+
+    data class Students(
+        val studentId: String,
         val name: String,
-        val dob: String,
-        var standard: String,
-        val type: String = "Student"
+        val email: String
+    )
+
+    data class Messages(
+        val messageId: String,
+        val groupId: String,
+        val senderId: String,
+        val content: String,
+        val timestamp: String
     )
 }

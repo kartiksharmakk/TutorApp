@@ -15,6 +15,11 @@
         android:label="CreateTestFragment"
         tools:layout="@layout/fragment_create_test"/>
     <fragment
+        android:id="@+id/tutorCreateGroupFragment"
+        android:name="com.example.myapplication.Tutor.CreateGroupFragment"
+        android:label="CreateGroupFragment"
+        tools:layout="@layout/fragment_create_group"/>
+    <fragment
         android:id="@+id/tutor_profile"
         android:name="com.example.myapplication.Tutor.ProfileFragment"
         android:label="TutorProfile"
