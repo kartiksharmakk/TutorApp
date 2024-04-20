@@ -13,6 +13,7 @@ object DataModel{
         val email: String,
         val countryCode: String,
         val phone: String,
+        var image: String,
         val isVerified: Boolean
     )
 

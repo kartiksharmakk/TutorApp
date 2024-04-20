@@ -13,14 +13,27 @@ import android.provider.Settings
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.widget.PopupMenu
 import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
+import com.example.myapplication.Authentication.AuthActivity
+import com.example.myapplication.Data.DataModel
 import com.example.myapplication.Data.Prefs
 import com.example.myapplication.Functions.CommonFunctions.getToastShort
+import com.example.myapplication.R
 import com.example.myapplication.databinding.FragmentProfileBinding
+import com.google.firebase.Firebase
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
+import com.google.firebase.database.database
 import com.google.firebase.storage.FirebaseStorage
 import com.google.zxing.BarcodeFormat
 import com.google.zxing.EncodeHintType
@@ -33,14 +46,23 @@ import java.util.Hashtable
 
 class ProfileFragment : Fragment() {
     lateinit var binding: FragmentProfileBinding
+    lateinit var auth: FirebaseAuth
+    lateinit var firebaseDatabase: FirebaseDatabase
+    lateinit var databaseReference: DatabaseReference
     private var isVisible = false
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentProfileBinding.inflate(inflater, container, false)
+        auth = FirebaseAuth.getInstance()
+        firebaseDatabase = Firebase.database
+        databaseReference = firebaseDatabase.getReference("User Details")
         val uid = Prefs.getUID(requireContext())
         val qrCodeBitmap = generateQRCode(uid!!)
+        binding.imgOptionsProfile.setOnClickListener { view->
+            showPopUpOptions(view)
+        }
         binding.imgEditImageProfile.setOnClickListener {
             checkPermission()
         }
@@ -55,6 +77,24 @@ class ProfileFragment : Fragment() {
         getDefaultProfileImage()
     }
 
+    private fun showPopUpOptions(view: View){
+        val popUpMenu = PopupMenu(requireContext(), view)
+        popUpMenu.menuInflater.inflate(R.menu.profile_options, popUpMenu.menu)
+
+        popUpMenu.setOnMenuItemClickListener { item: MenuItem ->
+            when(item.itemId){
+                R.id.scan_qr->{
+                    true
+                }
+                R.id.log_out->{
+                    logout()
+                    true
+                }
+                else -> false
+            }
+        }
+        popUpMenu.show()
+    }
     private fun generateQRCode(uid: String): Bitmap? {
         val width = 500
         val height = 500
@@ -141,6 +181,30 @@ class ProfileFragment : Fragment() {
         startActivity(intent)
     }
     private fun getDefaultProfileImage(){
+        val email = Prefs.getUSerEmailEncoded(requireContext())
+        val emailRef = databaseReference.child(email!!)
+        emailRef.child("image").addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                val imageUri = dataSnapshot.getValue(String::class.java)
+                imageUri?.let {
+                    val img = FirebaseStorage.getInstance().getReferenceFromUrl(imageUri)
+                    img.downloadUrl.addOnSuccessListener { uri ->
+                        Glide.with(requireContext()).load(uri).apply(RequestOptions.circleCropTransform())
+                            .into(binding.imgUserImageProfile)
+                    }.addOnFailureListener { exception ->
+                        Log.e("ProfileFragment","Error loading profile image: ${exception.message}")
+                    }
+                } ?: run {
+                    Log.e("ProfileFragment","Image URI is null")
+                    // Handle the case where image URI is null
+                }
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+                Log.e("ProfileFragment", "Error fetching image URI from database: ${databaseError.message}")
+            }
+        })
+    /*
         val userImageUri = Prefs.getUserImageURI(requireContext())
         if(userImageUri != null && userImageUri.isNotEmpty()){
             Glide.with(requireContext()).load(userImageUri).apply(RequestOptions.circleCropTransform())
@@ -154,7 +218,7 @@ class ProfileFragment : Fragment() {
                 Log.e("ProfileFragment","Error loading default profile image : ${exception.message}")
             }
         }
-
+         */
     }
     private fun pickProfilePhoto(){
         val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
@@ -164,50 +228,111 @@ class ProfileFragment : Fragment() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if(resultCode == Activity.RESULT_OK){
-            if (resultCode == PICK_IMAGE_REQUEST_CODE){
+        Log.d("ProfileFragment", "onActivityResult: requestCode=$requestCode, resultCode=$resultCode")
+        if (resultCode == Activity.RESULT_OK) {
+            if (requestCode == PICK_IMAGE_REQUEST_CODE) {
+                Log.d("ProfileFragment", "Picked image successfully")
                 data?.data?.let { uri ->
                     startCrop(uri)
                 }
-            }else if (requestCode == UCrop.REQUEST_CROP){
+            } else if (requestCode == UCrop.REQUEST_CROP) {
+                Log.d("ProfileFragment", "UCrop.REQUEST_CROP")
                 val resultUri = UCrop.getOutput(data!!)
                 resultUri?.let {
-                    uploadProfilePhoto(it)
+                    Log.d("ProfileFragment", "Cropped image URI: $it")
+                    showConfirmationDialog(it)
                 }
             }
-        }else if(resultCode == UCrop.RESULT_ERROR){
+        } else if (resultCode == Activity.RESULT_CANCELED) {
+            Log.d("ProfileFragment", "Activity result cancelled")
+        } else if (resultCode == UCrop.RESULT_ERROR) {
             val error = UCrop.getError(data!!)
-            Log.e("ProfileFragment","Crop error: ${error?.localizedMessage}")
+            Log.e("ProfileFragment", "Crop error: ${error?.localizedMessage}")
         }
     }
     private fun startCrop(uri: Uri){
-        val destinationUri = Uri.fromFile(File(requireContext().cacheDir,"cropped"))
-        UCrop.of(uri,destinationUri)
-            .withAspectRatio(1f,1f).start(requireContext(), requireParentFragment())
+        val destinationUri = Uri.fromFile(File(requireContext().cacheDir, "cropped"))
+        val options = UCrop.Options().apply {
+            setCompressionFormat(Bitmap.CompressFormat.JPEG)
+            setCompressionQuality(90)
+        }
+        UCrop.of(uri, destinationUri)
+            .withOptions(options)
+            .withAspectRatio(1f, 1f)
+            .start(requireContext(), this)
+
     }
 
     private fun uploadProfilePhoto(imageUri: Uri){
-        val bitmap = MediaStore.Images.Media.getBitmap(requireContext().contentResolver, imageUri)
+        try{
+            val bitmap = MediaStore.Images.Media.getBitmap(requireContext().contentResolver, imageUri)
 
-        val outputStream = ByteArrayOutputStream()
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 90, outputStream)
-        val data = outputStream.toByteArray()
-        val email = Prefs.getUSerEmailEncoded(requireContext())
-        val fileName = "${email}${System.currentTimeMillis()}.jpg"//pending
-        val profilePhotoRef = FirebaseStorage.getInstance().reference.child("profile_photos/$fileName")
-        val uploadTask = profilePhotoRef.putBytes(data)
-        uploadTask.addOnSuccessListener {taskSnapshot->
-            profilePhotoRef.downloadUrl.addOnSuccessListener { uri->
-                //SharedPrefs
-                Prefs.saveUserImageURI(requireContext(), uri.toString())
+            val outputStream = ByteArrayOutputStream()
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 90, outputStream)
+            val data = outputStream.toByteArray()
+            val email = Prefs.getUSerEmailEncoded(requireContext())
+            val fileName = "${email}}.jpg"//pending
+            val profilePhotoRef = FirebaseStorage.getInstance().reference.child("profile_photos/$fileName")
+            val uploadTask = profilePhotoRef.putBytes(data)
+            uploadTask.addOnSuccessListener {taskSnapshot->
+                profilePhotoRef.downloadUrl.addOnSuccessListener { uri->
+                    //SharedPrefs
+                    updateImageUriInDatabase(uri.toString())
 
-                Glide.with(requireContext()).load(uri).apply(RequestOptions.circleCropTransform())
-                    .into(binding.imgUserImageProfile)
-                getToastShort(requireContext(),"Profile photo uploaded")
+                    Glide.with(requireContext()).load(uri).apply(RequestOptions.circleCropTransform())
+                        .into(binding.imgUserImageProfile)
+                    getToastShort(requireContext(),"Profile photo uploaded")
+                }
+            }.addOnFailureListener{e ->
+                Log.e("ProfileFragment", "Error uploading profile photo: ${e.message}")
             }
-        }.addOnFailureListener{e ->
+        }catch (e: Exception){
             Log.e("ProfileFragment", "Error uploading profile photo: ${e.message}")
         }
+    }
+
+    private fun updateImageUriInDatabase(imageUri: String){
+        try{
+            val email = Prefs.getUSerEmailEncoded(requireContext())
+            val emailRef = databaseReference.child(email!!)
+            emailRef.child("image").setValue(imageUri)
+                .addOnSuccessListener {
+                    Log.d("ProfileFragment", "Image URI updated successfully in database")
+                }
+                .addOnFailureListener { e ->
+                    Log.e("ProfileFragment", "Error updating image URI in database: ${e.message}")
+                }
+        }catch (e: Exception){
+            Log.e("ProfileFragment", "Error updating image URI in database: ${e.message}")
+        }
+    }
+
+    private fun showConfirmationDialog(imageUri: Uri) {
+        AlertDialog.Builder(requireContext())
+            .setTitle("Confirm Image Upload")
+            .setMessage("Do you want to upload this image?")
+            .setPositiveButton("Yes") { _, _ ->
+                // Upload the image
+                uploadProfilePhoto(imageUri)
+            }
+            .setNegativeButton("No") { dialog, _ ->
+                dialog.dismiss()
+            }
+            .show()
+    }
+
+    private fun logout(){
+        try{
+            auth.signOut()
+            Prefs.clearPrefs()
+            val intent = Intent(requireContext(), AuthActivity::class.java)
+            startActivity(intent)
+            getToastShort(requireContext(),"Logged out")
+            requireActivity().finish()
+        }catch (e: Exception){
+            getToastShort(requireContext(),"Error: ${e.message}")
+        }
+
     }
     companion object{
         private const val STORAGE_PERMISSION_REQUEST_CODE = 2001
