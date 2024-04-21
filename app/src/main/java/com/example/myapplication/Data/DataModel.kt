@@ -10,6 +10,7 @@ object DataModel{
 
     data class UserCredentials(
         val uid: String,
+        val name: String,
         val email: String,
         val countryCode: String,
         val phone: String,
@@ -36,7 +37,11 @@ object DataModel{
     data class Students(
         val studentId: String,
         val name: String,
-        val email: String
+        val email: String,
+        val countryCode: String,
+        val phone: String,
+        var image: String,
+        val isVerified: Boolean
     )
 
     data class Messages(

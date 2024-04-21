@@ -10,6 +10,8 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.example.myapplication.Data.AuthenticationViewModel
 import com.example.myapplication.Data.Prefs
+import com.example.myapplication.Data.UserType
+import com.example.myapplication.Functions.CommonFunctions.getToastShort
 import com.example.myapplication.R
 import com.example.myapplication.databinding.FragmentSignupBinding
 import com.google.firebase.FirebaseException
@@ -48,6 +50,10 @@ class SignupFragment : Fragment() {
     }
     fun isEmpty(): Boolean{
         var emp = false
+        if(binding.edtNameSignup.text.toString().trim().isEmpty()){
+            emp = true
+            binding.edtNameSignup.error = "Required field"
+        }
         if(binding.edtEmailSignUp.text.toString().trim().isEmpty()){
             emp = true
             binding.edtEmailSignUp.error = "Required field"
@@ -74,16 +80,27 @@ class SignupFragment : Fragment() {
             binding.edtPasswordSignUp.error = "Passwords don't match"
             binding.edtConfirmPasswordSignUp.error = "Passwords don't match"
         }
+        if (!binding.radioButtonStudent.isChecked && !binding.radioButtonTeacher.isChecked) {
+            getToastShort(requireContext(), "Please select at least one option")
+            emp = true
+        }
         return emp
     }
     fun generateOtp(){
         if(!isEmpty()){
+            val name = binding.edtNameSignup.text.toString().trim()
             val email = binding.edtEmailSignUp.text.toString().trim()
             val phone = binding.edtPhoneSignUp.text.toString().trim()
             val countryCode = binding.ccpSignUp.selectedCountryCodeWithPlus
             val pass = binding.edtPasswordSignUp.text.toString().trim()
+            var userType = UserType.TEACHER
+            if(binding.radioButtonTeacher.isChecked) {
+                  userType =  UserType.TEACHER
+            } else if (binding.radioButtonStudent.isChecked) {
+                userType = UserType.STUDENT
+            }
             startphonenumberVerification(countryCode+phone)
-            viewModel.updateCredentials(email, countryCode, phone, pass)
+            viewModel.updateCredentials(name,email, countryCode, phone, pass, userType)
             findNavController().navigate(R.id.verifyPhoneFragment)
         }
     }

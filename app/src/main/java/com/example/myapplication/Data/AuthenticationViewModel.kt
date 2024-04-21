@@ -13,7 +13,7 @@ class AuthenticationViewModel: ViewModel() {
     private val mutableCountryCode = MutableLiveData<String>()
     private val mutableName = MutableLiveData<String>()
     private val mutableGender = MutableLiveData<String>()
-    private val mutableUserType = MutableLiveData<String>()
+    private val mutableUserType = MutableLiveData<UserType>()
 
 
     val username: LiveData<String> get() = mutableEmail
@@ -22,14 +22,16 @@ class AuthenticationViewModel: ViewModel() {
     val countryCode: LiveData<String> get() = mutableCountryCode
     val name: LiveData<String> get() = mutableName
     val gender: LiveData<String> get() = mutableGender
-    val userType: LiveData<String> get() = mutableUserType
+    val userType: LiveData<UserType> get() = mutableUserType
 
-    fun updateCredentials(email: String, code: String, phn: String, pass: String){
+    fun updateCredentials(name: String,email: String, code: String, phn: String, pass: String, userType: UserType){
         viewModelScope.launch {
+            mutableName.value = name
             mutableEmail.value = email
             mutableCountryCode.value = code
             mutablePhone.value = phn
             mutablePassword.value = pass
+            mutableUserType.value = userType
         }
         Log.d("ViewModel","UpdateCredentials : " +
                 "\nEmail : ${username.value}" +

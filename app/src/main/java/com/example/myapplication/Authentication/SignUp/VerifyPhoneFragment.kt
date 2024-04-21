@@ -15,6 +15,7 @@ import com.example.myapplication.Adapter.OtpAdapter
 import com.example.myapplication.Data.AuthenticationViewModel
 import com.example.myapplication.Data.DataModel
 import com.example.myapplication.Data.Prefs
+import com.example.myapplication.Data.UserType
 import com.example.myapplication.R
 import com.example.myapplication.databinding.FragmentVerifyPhoneBinding
 import com.google.firebase.Firebase
@@ -36,11 +37,14 @@ class VerifyPhoneFragment : Fragment() {
     private lateinit var auth: FirebaseAuth
     lateinit var firebaseDatabase: FirebaseDatabase
     lateinit var databaseReference: DatabaseReference
+    lateinit var studentDatabaseReference: DatabaseReference
     private lateinit var storedVerificationId: String
+    private lateinit var name: String
     private lateinit var email: String
     private lateinit var pass: String
     private lateinit var countryCode: String
     private lateinit var phoneNumber: String
+    private lateinit var userType: UserType
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -49,6 +53,7 @@ class VerifyPhoneFragment : Fragment() {
         auth = FirebaseAuth.getInstance()
         firebaseDatabase = Firebase.database
         databaseReference = firebaseDatabase.getReference("User Details")
+        studentDatabaseReference = firebaseDatabase.getReference("Student")
         Observer()
         binding.imgBackVerifyPhone.setOnClickListener {
             findNavController().popBackStack()
@@ -107,7 +112,11 @@ class VerifyPhoneFragment : Fragment() {
             .addOnCompleteListener(requireActivity()) {task->
                 if (task.isSuccessful) {
                     signUpWithEmail()
-                    saveUserDetails()
+                    if(userType == UserType.TEACHER){
+                        saveUserDetails()
+                    }else if(userType == UserType.STUDENT){
+                        saveStudentDetails()
+                    }
                     findNavController().navigate(R.id.action_verifyPhoneFragment_to_signInFragment)
                 } else {
                     if (task.exception is FirebaseAuthInvalidCredentialsException) {
@@ -122,11 +131,11 @@ class VerifyPhoneFragment : Fragment() {
     }
 
     fun saveUserDetails(){
-        val uid = databaseReference.push().key!!
+        val uid = "tr" + databaseReference.push().key!!
         val email1 = encodeEmail(email)
         val phoneWithCountryCode = countryCode + phoneNumber
         val image = "gs://tutorapp-c7511.appspot.com/Default_Resources/default_user_profile_image.png"
-        val user = DataModel.UserCredentials(uid,email1, countryCode, phoneWithCountryCode, image,false )
+        val user = DataModel.UserCredentials(uid,name,email1, countryCode, phoneWithCountryCode, image,false )
         val positionListener = object : ValueEventListener{
             override fun onDataChange(snapshot: DataSnapshot) {
                 try {
@@ -142,10 +151,37 @@ class VerifyPhoneFragment : Fragment() {
         }
         databaseReference.addValueEventListener(positionListener)
     }
+
+    fun saveStudentDetails(){
+        val uid = "st" + studentDatabaseReference.push().key!!
+        val email1 = encodeEmail(email)
+        val phoneWithCountryCode = countryCode + phoneNumber
+        val image = "gs://tutorapp-c7511.appspot.com/Default_Resources/default_user_profile_image.png"
+        val student = DataModel.Students(uid, name, email1, countryCode, phoneWithCountryCode, image, false)
+        val positionListener = object : ValueEventListener{
+            override fun onDataChange(snapshot: DataSnapshot) {
+                try {
+                    studentDatabaseReference.child(email1).setValue(student)
+                    Log.d("VerifyPhoneFragment","saveUserDetails: User data saved to firebase")
+                }catch (e: Exception){
+                    Log.d("VerifyPhoneFragment","Error : ${e.message}")
+                }
+            }
+            override fun onCancelled(error: DatabaseError) {
+                Log.w(TAG,"positionListener:onCancelled",error.toException())
+            }
+        }
+        studentDatabaseReference.addValueEventListener(positionListener)
+    }
     fun encodeEmail(email: String): String {
         return email.replace(".", "(dot)")
     }
     fun Observer(){
+        viewModel.name.observe(viewLifecycleOwner){
+            if (it != null){
+                name = it
+            }
+        }
         viewModel.phone.observe(viewLifecycleOwner){
             if(it != null){
                 binding.txtForgetPasswordDialog.setText(getString(R.string.verifyPhone)+"\n$it")
@@ -165,6 +201,11 @@ class VerifyPhoneFragment : Fragment() {
         viewModel.countryCode.observe(viewLifecycleOwner){
             if(it != null){
                 countryCode = it
+            }
+        }
+        viewModel.userType.observe(viewLifecycleOwner){
+            if(it != null){
+                userType = it
             }
         }
     }
