@@ -33,7 +33,7 @@
             android:layout_height="wrap_content">
 
             <ImageView
-                android:id="@+id/imageView5"
+                android:id="@+id/imgCreateGroupCoverImage"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 app:layout_constraintBottom_toTopOf="@+id/view"
@@ -91,7 +91,7 @@
                                 tools:layout_editor_absoluteY="14dp" />
 
                             <ImageView
-                                android:id="@+id/imgEditGroupDP"
+                                android:id="@+id/imgCreateGroupEditDP"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginEnd="16dp"
@@ -119,7 +119,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/cardView5">
 
                 <EditText
-                    android:id="@+id/editTextText"
+                    android:id="@+id/edtCreateGroupName"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:background="@android:color/transparent"
@@ -155,7 +155,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/cardView6">
 
                 <EditText
-                    android:id="@+id/editTextTextMultiLine"
+                    android:id="@+id/edtCreateGroupDescription"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:hint="  Group Description"
@@ -192,7 +192,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/cardView7">
 
                 <EditText
-                    android:id="@+id/editTextText2"
+                    android:id="@+id/edtCreateGroupSubject"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:background="@android:color/transparent"
@@ -245,7 +245,7 @@
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <TextView
-                        android:id="@+id/textView27"
+                        android:id="@+id/txtCreateGroupMemberCount"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
@@ -263,7 +263,7 @@
             </androidx.cardview.widget.CardView>
 
             <ImageView
-                android:id="@+id/imageView6"
+                android:id="@+id/imgCreateGroupAddMembers"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="32dp"
@@ -273,6 +273,7 @@
                 app:layout_constraintTop_toTopOf="@+id/cardView9" />
 
             <Button
+                android:id="@+id/btnCreateGroup"
                 android:layout_width="150dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="48dp"
@@ -287,6 +288,16 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/cardView9" />
+
+            <ImageView
+                android:id="@+id/imgCreateGroupEditCoverImage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="8dp"
+                android:src="@drawable/edit_icon"
+                app:layout_constraintBottom_toTopOf="@+id/view"
+                app:layout_constraintEnd_toEndOf="parent" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>
