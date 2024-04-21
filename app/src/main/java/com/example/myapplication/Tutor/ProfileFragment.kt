@@ -1,5 +1,6 @@
 package com.example.myapplication.Tutor
 
+import android.animation.ValueAnimator
 import android.app.Activity
 import android.app.AlertDialog
 import android.content.Intent
@@ -30,6 +31,7 @@ import com.example.myapplication.Data.Prefs
 import com.example.myapplication.Functions.CommonFunctions.getToastShort
 import com.example.myapplication.R
 import com.example.myapplication.databinding.FragmentProfileBinding
+import com.facebook.shimmer.Shimmer
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
@@ -83,6 +85,12 @@ class ProfileFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         getDefaultProfileImage()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        startImageShimmer()
+        startStatusShimmer()
     }
 
     private fun showPopUpOptions(view: View){
@@ -199,6 +207,7 @@ class ProfileFragment : Fragment() {
                     img.downloadUrl.addOnSuccessListener { uri ->
                         Glide.with(requireContext()).load(uri).apply(RequestOptions.circleCropTransform())
                             .into(binding.imgUserImageProfile)
+                        stopImageShimmer()
                     }.addOnFailureListener { exception ->
                         Log.e("ProfileFragment","Error loading profile image: ${exception.message}")
                     }
@@ -274,6 +283,7 @@ class ProfileFragment : Fragment() {
                     Glide.with(requireContext()).load(uri).apply(RequestOptions.circleCropTransform())
                         .into(binding.imgUserImageProfile)
                     getToastShort(requireContext(),"Profile photo uploaded")
+                    stopImageShimmer()
                 }
             }.addOnFailureListener{e ->
                 Log.e("ProfileFragment", "Error uploading profile photo: ${e.message}")
@@ -306,6 +316,7 @@ class ProfileFragment : Fragment() {
             .setPositiveButton("Yes") { _, _ ->
                 // Upload the image
                 uploadProfilePhoto(imageUri)
+                startImageShimmer()
             }
             .setNegativeButton("No") { dialog, _ ->
                 dialog.dismiss()
@@ -340,6 +351,7 @@ class ProfileFragment : Fragment() {
             val aboutText = editText.text.toString().trim()
             updateAboutSection(aboutText)
             alertDialog.dismiss()
+            startStatusShimmer()
         }
         btnCancel.setOnClickListener {
             alertDialog.dismiss()
@@ -355,6 +367,7 @@ class ProfileFragment : Fragment() {
                 if(snapshot.exists()){
                     val aboutText = snapshot.getValue(String::class.java)
                     binding.txtAboutProfile.setText(aboutText)
+                    stopStatusShimmer()
                 }else{
                     Log.d("ProfileFragment","About text does not exist in the database")
                 }
@@ -372,10 +385,38 @@ class ProfileFragment : Fragment() {
         val dbRef = databaseReference.child(email!!)
         dbRef.child("about").setValue(text).addOnSuccessListener {
             getToastShort(requireContext(), "About section updated successfully")
+            stopStatusShimmer()
         }.addOnFailureListener {
             Log.e("ProfileFragment", "Error updating about section.")
             getToastShort(requireContext(), "Failed to update about section")
         }
+    }
+
+    fun startImageShimmer(){
+        val shimmer = Shimmer.AlphaHighlightBuilder().setBaseAlpha(0.8f).setHighlightAlpha(1.0f)
+            .setRepeatCount(ValueAnimator.INFINITE)
+            .build()
+        binding.shimmerProfileImage.setShimmer(shimmer)
+        binding.shimmerProfileImage.startShimmer()
+        binding.shimmerProfileImage.visibility = View.VISIBLE
+    }
+    fun stopImageShimmer(){
+        binding.shimmerProfileImage.stopShimmer()
+        binding.shimmerProfileImage.visibility = View.GONE
+    }
+
+    fun startStatusShimmer(){
+        val shimmer = Shimmer.AlphaHighlightBuilder().setBaseAlpha(0.3f).setHighlightAlpha(0.9f)
+            .setRepeatCount(ValueAnimator.INFINITE)
+            .build()
+        binding.shimmerProfileStatus.setShimmer(shimmer)
+        binding.shimmerProfileStatus.startShimmer()
+        binding.shimmerProfileStatus.visibility = View.VISIBLE
+    }
+
+    fun stopStatusShimmer(){
+        binding.shimmerProfileStatus.stopShimmer()
+        binding.shimmerProfileStatus.visibility = View.GONE
     }
     private fun logout(){
         try{
