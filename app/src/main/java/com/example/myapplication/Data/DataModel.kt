@@ -20,8 +20,11 @@ object DataModel{
     data class Group(
         val groupId: String,
         val groupName: String,
+        val description: String,
         val subjectId: String,
         val tutorId: String,
+        val coverImage: String,
+        val displayImage: String,
         val students: List<String>
     )
 

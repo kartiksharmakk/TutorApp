@@ -431,7 +431,7 @@ class ProfileFragment : Fragment() {
         }
     }
     companion object{
-        private const val STORAGE_PERMISSION_REQUEST_CODE = 2001
+        const val STORAGE_PERMISSION_REQUEST_CODE = 2001
         private const val PICK_IMAGE_REQUEST_CODE = 2002
     }
 

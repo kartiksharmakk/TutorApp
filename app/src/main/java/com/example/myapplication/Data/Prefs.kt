@@ -10,7 +10,7 @@ object Prefs {
     private const val USER_IMAGE_URI = "image_uri"
     private const val USER_EMAIL = "user_email"
     private const val KEY_USERNAME = "username"
-    private const val UNIQUE_ID = ""
+    private const val UNIQUE_ID = "unique_id"
     private const val DEFAULT_USERNAME = ""
     private const val KEY_LOGGED_IN = "loggedIn"
     private const val VERIFICATION_ID_KEY = "verificationId"
