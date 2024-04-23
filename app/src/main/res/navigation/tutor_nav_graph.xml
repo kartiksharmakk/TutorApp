@@ -24,5 +24,10 @@
         android:name="com.example.myapplication.Tutor.ProfileFragment"
         android:label="TutorProfile"
         tools:layout="@layout/fragment_profile"/>
+    <fragment
+        android:id="@+id/addStudents"
+        android:name="com.example.myapplication.Tutor.StudentListFragment"
+        android:label="SelectStudentsFragment"
+        tools:layout="@layout/fragment_student_list"/>
 
 </navigation>
