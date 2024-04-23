@@ -21,6 +21,7 @@ import com.example.myapplication.Data.Prefs
 import com.example.myapplication.Functions.CommonFunctions.getToastShort
 import com.example.myapplication.Functions.CommonFunctions.loadFragmentFromFragment
 import com.example.myapplication.R
+import com.example.myapplication.Student.StudentHome
 import com.example.myapplication.Tutor.TutorHome
 import com.example.myapplication.databinding.FragmentSigninBinding
 import com.google.firebase.Firebase
@@ -104,6 +105,7 @@ class SigninFragment : Fragment() {
                 }
             }catch (e: Exception){
                 Toast.makeText(requireContext(), "Error: ${e.message}", Toast.LENGTH_SHORT).show()
+                Log.e("SignInRequest","Error: ${e.message}")
             }
         }
     }
@@ -114,8 +116,16 @@ class SigninFragment : Fragment() {
                     if(auth.currentUser!!.isEmailVerified){
                         updateVerificationInDatabase(true)
                         Prefs.getLoggedIn(requireContext(),true)
-                        val intent = Intent(requireContext(), TutorHome::class.java)
-                        startActivity(intent)
+                        val intentTutor = Intent(requireContext(), TutorHome::class.java)
+                        val intentStudent = Intent(requireContext(), StudentHome::class.java)
+                        isStudent { student ->
+                            if(student){
+                                startActivity(intentStudent)
+                            }else{
+                                startActivity(intentTutor)
+                            }
+                        }
+
                         Toast.makeText(requireContext(),"Sign In successful",Toast.LENGTH_SHORT).show()
                     }else{
                         Toast.makeText(requireContext(),"Please verify your email",Toast.LENGTH_SHORT).show()
@@ -127,6 +137,7 @@ class SigninFragment : Fragment() {
                 }
             }catch (e: Exception){
                 Toast.makeText(requireContext(), "Error: ${e.message}", Toast.LENGTH_SHORT).show()
+                Log.e("CheckVerificationStatus","Error: ${e.message}")
             }
         }
     }
@@ -150,11 +161,31 @@ class SigninFragment : Fragment() {
         return email.replace(".", "(dot)")
     }
 
+    fun isStudent(callback: (Boolean) -> Unit){
+        val email = binding.edtEmailSignIn.text.toString().trim()
+        val email1 = encodeEmail(email)
+        val dbRef = databaseReference.child(email1).child("uid")
+        var uid = ""
+        dbRef.addListenerForSingleValueEvent(object: ValueEventListener{
+            override fun onDataChange(snapshot: DataSnapshot) {
+                uid = snapshot.getValue().toString()
+                val isStudent = uid?.startsWith("st") ?: false
+                callback(isStudent)
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Log.d("SigninFragment", "Cannot get user type")
+                callback(false)
+            }
+
+        })
+    }
     fun updateVerificationInDatabase(status: Boolean){
         val email = binding.edtEmailSignIn.text.toString().trim()
         val email1 = encodeEmail(email)
-        databaseReference.child(email1).child("verified").setValue(true)
         updateSharedPreferences(email1)
+        databaseReference.child(email1).child("verified").setValue(true)
+
     }
 
     fun updateSharedPreferences(email: String){

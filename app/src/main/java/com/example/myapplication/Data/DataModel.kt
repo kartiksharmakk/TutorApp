@@ -2,10 +2,11 @@ package com.example.myapplication.Data
 
 object DataModel{
     data class TeacherModel(
+        val uid: String,
         val name: String,
-        val dob: String,
-        val gender: String,
-        val type: String = "Teacher"
+        val email: String,
+        val groups: String,
+        val tests: String
     )
 
     data class UserCredentials(
@@ -40,8 +41,7 @@ object DataModel{
         val email: String,
         val countryCode: String,
         val phone: String,
-        var image: String,
-        val isVerified: Boolean
+        var image: String
     )
 
     data class Messages(
@@ -50,5 +50,11 @@ object DataModel{
         val senderId: String,
         val content: String,
         val timestamp: String
+    )
+
+    data class Test(
+        val testId: String,
+        val creatorId: String,
+        val assignedTo: List<String>
     )
 }

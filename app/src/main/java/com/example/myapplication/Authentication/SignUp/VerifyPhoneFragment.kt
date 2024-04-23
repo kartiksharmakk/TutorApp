@@ -37,6 +37,7 @@ class VerifyPhoneFragment : Fragment() {
     private lateinit var auth: FirebaseAuth
     lateinit var firebaseDatabase: FirebaseDatabase
     lateinit var databaseReference: DatabaseReference
+    lateinit var tutorDatabaseReference: DatabaseReference
     lateinit var studentDatabaseReference: DatabaseReference
     private lateinit var storedVerificationId: String
     private lateinit var name: String
@@ -53,6 +54,7 @@ class VerifyPhoneFragment : Fragment() {
         auth = FirebaseAuth.getInstance()
         firebaseDatabase = Firebase.database
         databaseReference = firebaseDatabase.getReference("User Details")
+        tutorDatabaseReference = firebaseDatabase.getReference("Tutor")
         studentDatabaseReference = firebaseDatabase.getReference("Student")
         Observer()
         binding.imgBackVerifyPhone.setOnClickListener {
@@ -136,20 +138,9 @@ class VerifyPhoneFragment : Fragment() {
         val phoneWithCountryCode = countryCode + phoneNumber
         val image = "gs://tutorapp-c7511.appspot.com/Default_Resources/default_user_profile_image.png"
         val user = DataModel.UserCredentials(uid,name,email1, countryCode, phoneWithCountryCode, image,false )
-        val positionListener = object : ValueEventListener{
-            override fun onDataChange(snapshot: DataSnapshot) {
-                try {
-                    databaseReference.child(email1).setValue(user)
-                    Log.d("VerifyPhoneFragment","saveUserDetails: User data saved to firebase")
-                }catch (e: Exception){
-                    Log.d("VerifyPhoneFragment","Error : ${e.message}")
-                }
-            }
-            override fun onCancelled(error: DatabaseError) {
-                Log.w(TAG,"positionListener:onCancelled",error.toException())
-            }
-        }
-        databaseReference.addValueEventListener(positionListener)
+        val tutor = DataModel.TeacherModel(uid, name, email1,"0", "0" )
+        databaseReference.child(email1).setValue(user)
+        tutorDatabaseReference.child(email1).setValue(tutor)
     }
 
     fun saveStudentDetails(){
@@ -157,21 +148,10 @@ class VerifyPhoneFragment : Fragment() {
         val email1 = encodeEmail(email)
         val phoneWithCountryCode = countryCode + phoneNumber
         val image = "gs://tutorapp-c7511.appspot.com/Default_Resources/default_user_profile_image.png"
-        val student = DataModel.Students(uid, name, email1, countryCode, phoneWithCountryCode, image, false)
-        val positionListener = object : ValueEventListener{
-            override fun onDataChange(snapshot: DataSnapshot) {
-                try {
-                    studentDatabaseReference.child(email1).setValue(student)
-                    Log.d("VerifyPhoneFragment","saveUserDetails: User data saved to firebase")
-                }catch (e: Exception){
-                    Log.d("VerifyPhoneFragment","Error : ${e.message}")
-                }
-            }
-            override fun onCancelled(error: DatabaseError) {
-                Log.w(TAG,"positionListener:onCancelled",error.toException())
-            }
-        }
-        studentDatabaseReference.addValueEventListener(positionListener)
+        val user = DataModel.UserCredentials(uid, name, email1, countryCode, phoneWithCountryCode, image, false)
+        val student = DataModel.Students(uid, name, email1, countryCode, phoneWithCountryCode, image)
+        databaseReference.child(email1).setValue(user)
+        studentDatabaseReference.child(email1).setValue(student)
     }
     fun encodeEmail(email: String): String {
         return email.replace(".", "(dot)")
