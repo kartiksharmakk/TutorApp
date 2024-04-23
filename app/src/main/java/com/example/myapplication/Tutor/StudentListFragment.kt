@@ -5,34 +5,65 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.myapplication.Adapter.SelectStudentsAdapter
+import com.example.myapplication.Data.DataModel
 import com.example.myapplication.R
-class StudentListFragment : Fragment() {
+import com.example.myapplication.databinding.FragmentStudentListBinding
+import com.google.firebase.Firebase
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
+import com.google.firebase.database.database
 
+class StudentListFragment : Fragment() {
+    lateinit var binding: FragmentStudentListBinding
+    lateinit var auth: FirebaseAuth
+    lateinit var firebaseDatabase: FirebaseDatabase
+    lateinit var databaseReference: DatabaseReference
+    private lateinit var adapter: SelectStudentsAdapter
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_student_list, container, false)
+        binding = FragmentStudentListBinding.inflate(inflater, container, false)
+        auth = FirebaseAuth.getInstance()
+        firebaseDatabase = Firebase.database
+        databaseReference = firebaseDatabase.getReference("Students")
+        showRecyclerView()
+        loadStudents()
+
+        return binding.root
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment StudentListFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            StudentListFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
+    fun showRecyclerView(){
+        adapter = SelectStudentsAdapter(requireContext(), ArrayList())
+        binding.recyclerAddStudent.apply {
+            layoutManager = LinearLayoutManager(context)
+            adapter = this@StudentListFragment.adapter
+        }
+    }
+
+    private fun loadStudents() {
+        databaseReference.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val students = ArrayList<DataModel.Students>()
+                for (studentSnapshot in snapshot.children) {
+                    val student = studentSnapshot.getValue(DataModel.Students::class.java)
+                    student?.let {
+                        students.add(student)
+                    }
                 }
+                adapter.list = students
+                adapter.notifyDataSetChanged()
             }
+
+            override fun onCancelled(error: DatabaseError) {
+                // Handle database error
+            }
+        })
     }
 }
