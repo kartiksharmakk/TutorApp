@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.myapplication.Adapter.SelectStudentsAdapter
 import com.example.myapplication.Data.DataModel
@@ -32,9 +33,15 @@ class StudentListFragment : Fragment() {
         binding = FragmentStudentListBinding.inflate(inflater, container, false)
         auth = FirebaseAuth.getInstance()
         firebaseDatabase = Firebase.database
-        databaseReference = firebaseDatabase.getReference("Students")
+        databaseReference = firebaseDatabase.getReference("Student")
         showRecyclerView()
         loadStudents()
+        binding.imgBackAddStudents.setOnClickListener {
+            findNavController().popBackStack()
+        }
+        binding.imgSubmit.setOnClickListener {
+
+        }
 
         return binding.root
     }

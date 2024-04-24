@@ -12,6 +12,8 @@ import kotlinx.coroutines.launch
 class TutorViewModel: ViewModel() {
 
     private val mutuableAbout = MutableLiveData<String>()
+    private val mutableGroupStudentsCount = MutableLiveData<Int>()
+    private val mutableGroupStudentsList = MutableLiveData<List<String>>()
 
 
     val firebaseDatabase = Firebase.database
@@ -24,6 +26,10 @@ class TutorViewModel: ViewModel() {
             mutuableAbout.value = text
         }
         databaseReference.child(email!!).child("about").setValue(text)
+    }
+
+    fun loadGroupStudents(){
+
     }
 
 }

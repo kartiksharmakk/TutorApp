@@ -36,12 +36,12 @@ object DataModel{
     )
 
     data class Students(
-        val studentId: String,
-        val name: String,
-        val email: String,
-        val countryCode: String,
-        val phone: String,
-        var image: String
+        val studentId: String = "",
+        val name: String = "",
+        val email: String = "",
+        val countryCode: String = "",
+        val phone: String = "",
+        var image: String = ""
     )
 
     data class Messages(

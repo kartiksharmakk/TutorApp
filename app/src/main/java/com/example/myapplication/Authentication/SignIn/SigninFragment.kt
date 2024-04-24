@@ -125,7 +125,7 @@ class SigninFragment : Fragment() {
                                 startActivity(intentTutor)
                             }
                         }
-
+                        findNavController().popBackStack()
                         Toast.makeText(requireContext(),"Sign In successful",Toast.LENGTH_SHORT).show()
                     }else{
                         Toast.makeText(requireContext(),"Please verify your email",Toast.LENGTH_SHORT).show()
