@@ -5,10 +5,14 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.myapplication.Adapter.SelectStudentsAdapter
 import com.example.myapplication.Data.DataModel
+import com.example.myapplication.Data.TutorViewModel
 import com.example.myapplication.R
 import com.example.myapplication.databinding.FragmentStudentListBinding
 import com.google.firebase.Firebase
@@ -26,6 +30,7 @@ class StudentListFragment : Fragment() {
     lateinit var firebaseDatabase: FirebaseDatabase
     lateinit var databaseReference: DatabaseReference
     private lateinit var adapter: SelectStudentsAdapter
+    val viewModel: TutorViewModel by activityViewModels<TutorViewModel>()
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -39,15 +44,20 @@ class StudentListFragment : Fragment() {
         binding.imgBackAddStudents.setOnClickListener {
             findNavController().popBackStack()
         }
+        binding.imgSubmit.isEnabled = true
         binding.imgSubmit.setOnClickListener {
-
+            findNavController().popBackStack()
         }
 
         return binding.root
     }
 
+    override fun onResume() {
+        super.onResume()
+        Observer()
+    }
     fun showRecyclerView(){
-        adapter = SelectStudentsAdapter(requireContext(), ArrayList())
+        adapter = SelectStudentsAdapter(requireContext(), ArrayList(), viewModel)
         binding.recyclerAddStudent.apply {
             layoutManager = LinearLayoutManager(context)
             adapter = this@StudentListFragment.adapter
@@ -72,5 +82,17 @@ class StudentListFragment : Fragment() {
                 // Handle database error
             }
         })
+    }
+
+    fun Observer(){
+        viewModel.selectedStudentsCount.observe(viewLifecycleOwner){
+            if (it != null){
+                if(it == 0){
+                    binding.imgSubmit.isEnabled = false
+                }else{
+                    binding.imgSubmit.isEnabled = true
+                }
+            }
+        }
     }
 }

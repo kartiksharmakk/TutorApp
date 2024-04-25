@@ -16,11 +16,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.example.myapplication.Data.DataModel
 import com.example.myapplication.Data.Prefs
+import com.example.myapplication.Data.TutorViewModel
 import com.example.myapplication.Functions.CommonFunctions
 import com.example.myapplication.Functions.CommonFunctions.getToastShort
 import com.example.myapplication.R
@@ -31,7 +33,6 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.database
 import com.google.firebase.storage.FirebaseStorage
 import com.yalantis.ucrop.UCrop
-import java.io.ByteArrayOutputStream
 import java.io.File
 
 class CreateGroupFragment : Fragment() {
@@ -41,6 +42,8 @@ class CreateGroupFragment : Fragment() {
     lateinit var displayImageUrl: Uri
     lateinit var coverImageUrl: Uri
     private var currentImageType: ImageType? = null
+    private val viewModel: TutorViewModel by activityViewModels<TutorViewModel>()
+    lateinit var selectedStudents: List<String>
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -65,6 +68,11 @@ class CreateGroupFragment : Fragment() {
         }
 
         return binding.root
+    }
+
+    override fun onResume() {
+        super.onResume()
+        Observer()
     }
 
     private fun checkPermission(imageType: ImageType){
@@ -97,7 +105,7 @@ class CreateGroupFragment : Fragment() {
                     pickImage(ImageType.COVER)
                 }else{
                     showPermissionDeniedDialog()
-                    CommonFunctions.getToastShort(
+                    getToastShort(
                         requireContext(),
                         "Please provide storage permissions"
                     )
@@ -108,7 +116,7 @@ class CreateGroupFragment : Fragment() {
                     pickImage(ImageType.DISPLAY)
                 } else {
                     showPermissionDeniedDialog()
-                    CommonFunctions.getToastShort(
+                    getToastShort(
                         requireContext(),
                         "Please provide storage permissions"
                     )
@@ -131,7 +139,7 @@ class CreateGroupFragment : Fragment() {
             .create()
 
         alertDialog.show()
-        CommonFunctions.getToastShort(
+        getToastShort(
             requireContext(),
             "Please provide storage permissions manually."
         )
@@ -255,7 +263,7 @@ class CreateGroupFragment : Fragment() {
             val description = binding.edtCreateGroupDescription.text.toString().trim()
             val subject = binding.edtCreateGroupSubject.text.toString().trim()
             val tutor_uid = Prefs.getUID(requireContext())
-            val students = listOf("Student1")
+            val students = selectedStudents
 
             val group = DataModel.Group(groupId,name, description,subject,tutor_uid!!,"","", students)
             databaseReference.child(groupId).setValue(group).addOnSuccessListener {
@@ -285,6 +293,21 @@ class CreateGroupFragment : Fragment() {
             isInvalid = true
         }
         return isInvalid
+    }
+
+    fun Observer(){
+        viewModel.selectedStudentsCount.observe(viewLifecycleOwner){
+            if(it != null){
+                binding.txtCreateGroupMemberCount.text = it.toString()
+            }
+        }
+
+        viewModel.selectedStudentIds.observe(viewLifecycleOwner){
+            if (it != null){
+                selectedStudents = it.toList()
+                Log.d("CreateGroupFragment","$selectedStudents")
+            }
+        }
     }
     enum class ImageType{
         COVER,

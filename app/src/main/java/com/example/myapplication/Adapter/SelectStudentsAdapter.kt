@@ -9,16 +9,17 @@ import android.widget.BaseAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.myapplication.Data.DataModel
+import com.example.myapplication.Data.TutorViewModel
 import com.example.myapplication.databinding.CustomSelectStudentBinding
 import com.facebook.shimmer.Shimmer
 import com.facebook.shimmer.ShimmerDrawable
 import com.google.firebase.storage.FirebaseStorage
 
-class SelectStudentsAdapter(var context: Context,var list: ArrayList<DataModel.Students>): RecyclerView.Adapter<SelectStudentsAdapter.StudentViewHolder>() {
+class SelectStudentsAdapter(var context: Context,var list: List<DataModel.Students>, val viewModel: TutorViewModel): RecyclerView.Adapter<SelectStudentsAdapter.StudentViewHolder>() {
 
     val selectedStudentIds = mutableListOf<String>()
-    class StudentViewHolder(val binding: CustomSelectStudentBinding): RecyclerView.ViewHolder(binding.root){
-        fun bind(context: Context, student: DataModel.Students, selectedStudentIds: MutableList<String>){
+    class StudentViewHolder(val binding: CustomSelectStudentBinding, private val adapter: SelectStudentsAdapter): RecyclerView.ViewHolder(binding.root){
+        fun bind(context: Context, student: DataModel.Students, selectedStudentIds: MutableList<String>, viewModel: TutorViewModel){
             binding.apply {
                 val shimmer = Shimmer.AlphaHighlightBuilder()
                     .setDuration(1000) // Adjust shimmer animation duration as needed
@@ -52,20 +53,23 @@ class SelectStudentsAdapter(var context: Context,var list: ArrayList<DataModel.S
                     if(isSelected){
                         selectedStudentIds.remove(student.studentId)
                         binding.imgRadioButton.visibility = View.GONE
+                        viewModel.removeSelectedStudent(student.studentId)
                     }else{
                         selectedStudentIds.add(student.studentId)
                         binding.imgRadioButton.visibility = View.VISIBLE
+                        viewModel.addSelectedStudent(student.studentId)
                     }
+                    adapter.notifyItemChanged(adapterPosition)
                     isSelected = !isSelected
                 }
-
             }
+
         }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): StudentViewHolder {
         val binding = CustomSelectStudentBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return StudentViewHolder(binding)
+        return StudentViewHolder(binding, this)
     }
 
     override fun getItemCount(): Int {
@@ -74,14 +78,11 @@ class SelectStudentsAdapter(var context: Context,var list: ArrayList<DataModel.S
 
     override fun onBindViewHolder(holder: StudentViewHolder, position: Int) {
         val student = list[position]
-        holder.bind(context,student, selectedStudentIds)
+        holder.bind(context,student, selectedStudentIds, viewModel)
     }
 
     fun getSelectStudentIds(): List<String>{
         return selectedStudentIds
     }
 
-    fun getSelectedStudentsCount(): Int {
-        return selectedStudentIds.size
-    }
 }
