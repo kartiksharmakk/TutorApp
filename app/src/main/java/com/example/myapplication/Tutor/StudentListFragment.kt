@@ -44,7 +44,7 @@ class StudentListFragment : Fragment() {
         binding.imgBackAddStudents.setOnClickListener {
             findNavController().popBackStack()
         }
-        binding.imgSubmit.isEnabled = true
+        binding.imgSubmit.isEnabled = false
         binding.imgSubmit.setOnClickListener {
             findNavController().popBackStack()
         }

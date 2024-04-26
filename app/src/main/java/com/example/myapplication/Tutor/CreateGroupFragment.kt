@@ -262,9 +262,15 @@ class CreateGroupFragment : Fragment() {
             val name = binding.edtCreateGroupName.text.toString().trim()
             val description = binding.edtCreateGroupDescription.text.toString().trim()
             val subject = binding.edtCreateGroupSubject.text.toString().trim()
-            val tutor_uid = Prefs.getUID(requireContext())
+            val tutor_uid = Prefs.getUID(requireContext())!!
             val students = selectedStudents
 
+            Log.e("CreateGroupFragment","GroupId : $groupId")
+            Log.e("CreateGroupFragment","GroupId : $name")
+            Log.e("CreateGroupFragment","GroupId : $description")
+            Log.e("CreateGroupFragment","GroupId : $subject")
+            Log.e("CreateGroupFragment","GroupId : $tutor_uid!!")
+            Log.e("CreateGroupFragment","GroupId : $students")
             val group = DataModel.Group(groupId,name, description,subject,tutor_uid!!,"","", students)
             databaseReference.child(groupId).setValue(group).addOnSuccessListener {
                 Log.d("CreateGroupFragment", "Group created successfully")
