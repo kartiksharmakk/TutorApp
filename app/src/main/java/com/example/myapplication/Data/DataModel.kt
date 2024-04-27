@@ -55,6 +55,15 @@ object DataModel{
     data class Test(
         val testId: String,
         val creatorId: String,
-        val assignedTo: List<String>
+        val assignedTo: List<String>,
+        val questions: List<Question>
+    )
+
+    data class Question(
+        val questionId: String,
+        val text: String,
+        val options: List<String>,
+        val correctOption: Int,
+        val marks: Int
     )
 }
