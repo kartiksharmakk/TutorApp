@@ -56,14 +56,14 @@ object DataModel{
         val testId: String,
         val creatorId: String,
         val assignedTo: List<String>,
-        val questions: List<Question>
+        var questions: List<Question>
     )
 
     data class Question(
         val questionId: String,
         val text: String,
         val options: List<String>,
-        val correctOption: Int,
+        val correctOption: String,
         val marks: Int
     )
 }

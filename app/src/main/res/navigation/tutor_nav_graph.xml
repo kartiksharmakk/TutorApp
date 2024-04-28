@@ -29,5 +29,10 @@
         android:name="com.example.myapplication.Tutor.StudentListFragment"
         android:label="SelectStudentsFragment"
         tools:layout="@layout/fragment_student_list"/>
+    <fragment
+        android:id="@+id/createTest"
+        android:name="com.example.myapplication.Tutor.CreateTestFragment"
+        android:label="CreateTestFragment"
+        tools:layout="@layout/fragment_create_test"/>
 
 </navigation>
