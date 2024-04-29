@@ -30,6 +30,10 @@ class TutorHome : AppCompatActivity() {
                     navController.navigate(R.id.tutor_profile)
                     true
                 }
+                R.id.createTest->{
+                    navController.navigate(R.id.tutorCreateTestFragment)
+                    true
+                }
                 else->{
                 false
                 }

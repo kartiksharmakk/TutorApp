@@ -10,20 +10,25 @@ import com.google.firebase.database.ValueEventListener
 class TestRepository(val database: FirebaseDatabase) {
     private val testRef = database.getReference("tests")
 
-    fun saveTest(test: DataModel.Test){
+    fun saveTest(test: DataModel.Test): String{
         val testId = "test" + testRef.push().key!!
         testRef.child(testId).setValue(test)
 
         test.questions.forEach { question ->
             saveQuestion(question, testId)
         }
+        return testId
     }
 
     private fun saveQuestion(question: DataModel.Question, testId: String){
         val questionRef = testRef.child(testId).child("questions")
         questionRef.child(question.questionId).setValue(question)
     }
-
+    fun addQuestionToTest(testId: String, question: DataModel.Question){
+        val questionId = testRef.child("$testId/questions").push().key
+        question.questionId = questionId!!
+        testRef.child("$testId/questions").child(questionId!!).setValue(question)
+    }
     fun getTestByStudentId(studentId: String): LiveData<List<DataModel.Test>>{
         val liveDataTests = MutableLiveData<List<DataModel.Test>>()
         val valueEventListener = testRef.addValueEventListener(object : ValueEventListener{

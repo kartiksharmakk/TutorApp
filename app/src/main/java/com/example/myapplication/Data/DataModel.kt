@@ -60,7 +60,7 @@ object DataModel{
     )
 
     data class Question(
-        val questionId: String,
+        var questionId: String,
         val text: String,
         val options: List<String>,
         val correctOption: String,

@@ -11,9 +11,12 @@ class TestViewModel(var testRepository: TestRepository): ViewModel() {
     private val _questions = MutableLiveData<MutableList<DataModel.Question>>()
     val questions: LiveData<MutableList<DataModel.Question>> = _questions
 
+    fun addQuestionToTest(testId: String, question: DataModel.Question){
+        testRepository.addQuestionToTest(testId, question)
+    }
     fun saveTest(){
-        var testToSave = test.value!!
-        testToSave.questions = questions.value!!.toList()
+        var testToSave = test.value ?: return
+        testToSave.questions = questions.value ?: mutableListOf()
         testRepository.saveTest(testToSave)
     }
 

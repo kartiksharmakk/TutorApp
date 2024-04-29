@@ -10,6 +10,11 @@
         android:icon="@drawable/create_group"/>
 
     <item
+        android:id="@+id/createTest"
+        android:title="Create Test"
+        android:icon="@drawable/test"/>
+
+    <item
         android:id="@+id/t_profile"
         android:title="Profile"
         android:icon="@drawable/profile"/>
