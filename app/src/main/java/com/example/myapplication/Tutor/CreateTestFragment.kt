@@ -1,11 +1,13 @@
 package com.example.myapplication.Tutor
 
+import android.app.AlertDialog
 import android.content.Context
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
@@ -58,11 +60,7 @@ class CreateTestFragment : Fragment(), QuestionClickListener {
             findNavController().popBackStack()
         }
         binding.imgSaveCreateTest.setOnClickListener {
-           testId = testRepository.saveTest(viewModel.test.value!!)
-            viewModel.questions.value?.forEach { question ->
-                viewModel.addQuestionToTest(testId, question)
-            }
-
+           showPopUp()
         }
         binding.imgAddQuestion.setOnClickListener {
             viewModel.addEmptyQuestion()
@@ -74,12 +72,40 @@ class CreateTestFragment : Fragment(), QuestionClickListener {
         return binding.root
     }
 
-    private fun onAddQuestionClicked(){
-        viewModel.addEmptyQuestion()
-        adapter.notifyItemInserted(adapter.itemCount)
+    fun showPopUp(){
+        val dialogInflater = LayoutInflater.from(requireContext())
+        val view = dialogInflater.inflate(R.layout.custom_alert_dialog, null)
+
+        val btnCreate: Button = view.findViewById(R.id.btnCreateCustomAlertDialog)
+        val btnCancel: Button = view.findViewById(R.id.btnCancelAlertDialog1)
+
+        val alertDialog = AlertDialog.Builder(requireContext()).setView(view)
+            .setCancelable(false).create()
+
+        btnCreate.setOnClickListener {
+            testId = testRepository.generateTestId()
+            viewModel.saveTestAndQuestions()
+            alertDialog.dismiss()
+        }
+        btnCancel.setOnClickListener {
+            alertDialog.dismiss()
+        }
+        alertDialog.show()
     }
 
     override fun onQuestionInteraction(question: DataModel.Question, position: Int) {
         viewModel.addQuestionToTest(testId, question)
+    }
+
+    override fun onSaveClicked(
+        question: String,
+        option1: String,
+        option2: String,
+        option3: String,
+        option4: String,
+        marks: String,
+        answer: String
+    ) {
+        viewModel.addQuestionToTest("", DataModel.Question("", question,listOf(option1, option2, option3, option4), answer, marks.toInt()))
     }
 }

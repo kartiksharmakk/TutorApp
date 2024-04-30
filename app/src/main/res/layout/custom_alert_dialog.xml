@@ -7,6 +7,7 @@
     app:cardCornerRadius="16dp"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content">
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="350dp"
         android:layout_height="wrap_content">
@@ -19,63 +20,64 @@
             android:layout_marginTop="16dp"
             android:layout_marginEnd="16dp"
             android:fontFamily="sans-serif-black"
-            android:text="About You!"
+            android:text="Create Test!"
             android:textSize="24dp"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <Button
-            android:id="@+id/btnUpdateCustomAlertDialog"
+        <ImageView
+            android:id="@+id/imageView"
             android:layout_width="120dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:layout_marginBottom="32dp"
-            android:text="Update"
-            android:backgroundTint="@color/black"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/btnCancelAlertDialog"
+            android:layout_height="120dp"
+            android:layout_marginTop="16dp"
+            android:src="@drawable/exitlogo"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/cardView4" />
+            app:layout_constraintTop_toBottomOf="@+id/txtTitle" />
 
         <Button
-            android:id="@+id/btnCancelAlertDialog"
+            android:id="@+id/btnCreateCustomAlertDialog"
             android:layout_width="120dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:layout_marginBottom="32dp"
-            android:text="Cancel"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="16dp"
             android:backgroundTint="@color/black"
+            android:text="Create"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/btnCancelAlertDialog1"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/txtMessage" />
+
+        <Button
+            android:id="@+id/btnCancelAlertDialog1"
+            android:layout_width="120dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="16dp"
+            android:backgroundTint="@color/black"
+            android:text="Cancel"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/btnUpdateCustomAlertDialog"
-            app:layout_constraintTop_toBottomOf="@+id/cardView4" />
+            app:layout_constraintStart_toEndOf="@+id/btnCreateCustomAlertDialog"
+            app:layout_constraintTop_toBottomOf="@+id/txtMessage" />
 
-        <androidx.cardview.widget.CardView
-            android:id="@+id/cardView4"
+        <TextView
+            android:id="@+id/txtMessage"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:layout_marginTop="24dp"
+            android:layout_marginTop="8dp"
             android:layout_marginEnd="16dp"
-            android:elevation="4dp"
-            app:cardCornerRadius="16dp"
+            android:textSize="18dp"
+            android:text="Are you sure? Do you want to create test?"
+            android:textStyle="bold"
+            android:gravity="center"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/txtTitle">
-            <EditText
-                android:id="@+id/edtCustomAlertDialog"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@android:color/transparent"
-                android:ems="10"
-                android:hint="  About"
-                android:textSize="18dp"
-                android:fontFamily="sans-serif-black"
-                android:inputType="text"
-                android:padding="8dp" />
-        </androidx.cardview.widget.CardView>
+            app:layout_constraintTop_toBottomOf="@+id/imageView" />
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

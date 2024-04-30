@@ -4,7 +4,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 
-class TestViewModel(var testRepository: TestRepository): ViewModel() {
+class
+TestViewModel(var testRepository: TestRepository): ViewModel() {
     private val _test = MutableLiveData<DataModel.Test>()
     val test: LiveData<DataModel.Test> = _test
 
@@ -14,10 +15,12 @@ class TestViewModel(var testRepository: TestRepository): ViewModel() {
     fun addQuestionToTest(testId: String, question: DataModel.Question){
         testRepository.addQuestionToTest(testId, question)
     }
-    fun saveTest(){
-        var testToSave = test.value ?: return
-        testToSave.questions = questions.value ?: mutableListOf()
-        testRepository.saveTest(testToSave)
+    fun saveTestAndQuestions(){
+        val testId = testRepository.generateTestId()
+        val questionsWithIds = _questions.value?.map{question ->
+            question.copy(questionId = testRepository.generateQuestionId(testId))
+        }?: emptyList()
+        testRepository.saveTestAndQuestions(testId, questionsWithIds)
     }
 
     fun addEmptyQuestion(){

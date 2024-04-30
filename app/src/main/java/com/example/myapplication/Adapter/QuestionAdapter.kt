@@ -22,6 +22,7 @@ class QuestionAdapter(
     val onQuestionClickListener: QuestionClickListener
 ): RecyclerView.Adapter<QuestionAdapter.QuestionViewHolder>() {
 
+    var questionClickListener: QuestionClickListener? = null
     class QuestionViewHolder(itemView: View): RecyclerView.ViewHolder(itemView){
         val edtQuestion: EditText = itemView.findViewById(R.id.edtQuestion)
         val edtOption1: EditText = itemView.findViewById(R.id.edtOption1)
@@ -45,6 +46,9 @@ class QuestionAdapter(
     }
 
     override fun onBindViewHolder(holder: QuestionViewHolder, position: Int) {
+        holder.itemView.setOnClickListener {
+            onQuestionClickListener.onQuestionInteraction(questions[position],position)
+        }
         val question = questions[position]
         var correctAnswer = ""
 
@@ -109,7 +113,7 @@ class QuestionAdapter(
                 options[4] -> {option4}
                 else -> {""}
             }
-
+            questionClickListener?.onSaveClicked(question, option1, option2, option3, option4, marks, answer)
 
             if (question.isEmpty() || option1.isEmpty() || option2.isEmpty() || option3.isEmpty() || option4.isEmpty() || marks == null || answer.isEmpty()) {
                 // Show error message (e.g., Toast)

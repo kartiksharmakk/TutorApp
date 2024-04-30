@@ -1,5 +1,6 @@
 package com.example.myapplication.Data
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.google.firebase.database.DataSnapshot
@@ -10,19 +11,27 @@ import com.google.firebase.database.ValueEventListener
 class TestRepository(val database: FirebaseDatabase) {
     private val testRef = database.getReference("tests")
 
-    fun saveTest(test: DataModel.Test): String{
-        val testId = "test" + testRef.push().key!!
-        testRef.child(testId).setValue(test)
+    fun generateTestId(): String{
+        return "test" + testRef.push().key!!
+    }
+    fun generateQuestionId(testId: String): String{
+        return  testRef.child(testId).child("questions").push().key!!
+    }
+    fun saveTestAndQuestions(testId: String, questions: List<DataModel.Question>){
+        testRef.child(testId).setValue(DataModel.Test(testId,"", emptyList(), emptyList()))//Add data
 
-        test.questions.forEach { question ->
+        questions.forEach { question ->
+            val questionId = generateQuestionId(testId)
+            question.questionId = questionId
             saveQuestion(question, testId)
         }
-        return testId
+        Log.d("TestRepository","Test saved to DB")
     }
 
     private fun saveQuestion(question: DataModel.Question, testId: String){
         val questionRef = testRef.child(testId).child("questions")
         questionRef.child(question.questionId).setValue(question)
+        Log.d("TestRepository","Question saved to DB")
     }
     fun addQuestionToTest(testId: String, question: DataModel.Question){
         val questionId = testRef.child("$testId/questions").push().key
