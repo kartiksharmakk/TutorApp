@@ -108,9 +108,17 @@ class CreateTestFragment : Fragment(),  QuestionAdapter.onclickListner {
         marks: String,
         answer: String
     ) {
-        val newQuestion = DataModel.Question("", question, listOf(option1, option2, option3, option4), answer, marks.toInt())
-        viewModel.addQuestion(newQuestion)
-        questionsList.add(newQuestion)
+        if(question != "" && option1 != "" && option2 != "" && option3 != "" && option4 != "" && answer != "" && marks != "" ) {
+            val newQuestion = DataModel.Question(
+                "",
+                question,
+                listOf(option1, option2, option3, option4),
+                answer,
+                marks.toInt()
+            )
+            viewModel.addQuestion(newQuestion)
+            questionsList.add(newQuestion)
+        }
         //viewModel.addQuestion(newQuestion)
     }
 }
