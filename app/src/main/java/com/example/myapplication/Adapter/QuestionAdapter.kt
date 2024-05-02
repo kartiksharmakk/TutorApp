@@ -14,6 +14,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.myapplication.Data.DataModel
+import com.example.myapplication.Functions.CommonFunctions.getToastShort
 import com.example.myapplication.R
 import com.example.myapplication.interfaces.QuestionClickListener
 
@@ -48,6 +49,40 @@ class QuestionAdapter(
     override fun onBindViewHolder(holder: QuestionViewHolder, position: Int) {
         holder.itemView.setOnClickListener {
             onQuestionClickListener.onQuestionInteraction(questions[position],position)
+        }
+
+        fun inputValidation(): Boolean{
+            var op = true
+            holder.apply {
+                if(edtQuestion.text.toString().trim().isEmpty()){
+                    edtQuestion.error = "Required Field"
+                    op = false
+                }
+                if(edtOption1.text.toString().trim().isEmpty()){
+                    edtOption1.error = "Required Field"
+                    op = false
+                }
+                if(edtOption2.text.toString().trim().isEmpty()){
+                    edtOption2.error = "Required Field"
+                    op = false
+                }
+                if(edtOption3.text.toString().trim().isEmpty()){
+                    edtOption3.error = "Required Field"
+                    op = false
+                }
+                if(edtOption4.text.toString().trim().isEmpty()){
+                    edtOption4.error = "Required Field"
+                    op = false
+                }
+                if(edtMarks.text.toString().trim().isEmpty()){
+                    edtMarks.error = "Required Field"
+                    op = false
+                }
+                if (spinnerCorrectOption.selectedItem == "Answer"){
+                    op = false
+                }
+                return op
+            }
         }
         val question = questions[position]
         var correctAnswer = ""
@@ -96,51 +131,57 @@ class QuestionAdapter(
         }
 
         holder.btnSaveQuestion.setOnClickListener {
-            holder.btnSaveQuestion.visibility = View.GONE
-            holder.btnEditQuestion.visibility = View.VISIBLE
+           if(inputValidation()){
+                holder.apply {
+                    btnSaveQuestion.visibility = View.GONE
+                    btnEditQuestion.visibility = View.VISIBLE
 
 
-            val question = holder.edtQuestion.text.toString().trim()
-            val option1 = holder.edtOption1.text.toString().trim()
-            val option2 = holder.edtOption2.text.toString().trim()
-            val option3 = holder.edtOption3.text.toString().trim()
-            val option4 = holder.edtOption4.text.toString().trim()
-            val marks = holder.edtMarks.text.toString().trim()
-            val answer = when(correctAnswer){
-                options[1] -> {option1}
-                options[2] -> {option2}
-                options[3] -> {option3}
-                options[4] -> {option4}
-                else -> {""}
-            }
-            //questionClickListener?.onSaveClicked(question, option1, option2, option3, option4, marks, answer)
-            clickListner.onSaveClicked(question, option1, option2, option3, option4, marks, answer)
+                    val question = edtQuestion.text.toString().trim()
+                    val option1 = edtOption1.text.toString().trim()
+                    val option2 = edtOption2.text.toString().trim()
+                    val option3 = edtOption3.text.toString().trim()
+                    val option4 = edtOption4.text.toString().trim()
+                    val marks = edtMarks.text.toString().trim()
+                    val answer = when(correctAnswer){
+                        options[1] -> {option1}
+                        options[2] -> {option2}
+                        options[3] -> {option3}
+                        options[4] -> {option4}
+                        else -> {""}
+                    }
+                    //questionClickListener?.onSaveClicked(question, option1, option2, option3, option4, marks, answer)
+                    clickListner.onSaveClicked(question, option1, option2, option3, option4, marks, answer)
 
-            if (question.isEmpty() || option1.isEmpty() || option2.isEmpty() || option3.isEmpty() || option4.isEmpty() || marks == null || answer.isEmpty()) {
-                // Show error message (e.g., Toast)
-                return@setOnClickListener
-            }
+                    if (question.isEmpty() || option1.isEmpty() || option2.isEmpty() || option3.isEmpty() || option4.isEmpty() || marks == null || answer.isEmpty()) {
+                        // Show error message (e.g., Toast)
+                        return@setOnClickListener
+                    }
 
-            holder.edtQuestion.isEnabled = false
-            holder.edtOption1.isEnabled = false
-            holder.edtOption2.isEnabled = false
-            holder.edtOption3.isEnabled = false
-            holder.edtOption4.isEnabled = false
-            holder.edtMarks.isEnabled = false
-            holder.spinnerCorrectOption.isEnabled = false
+                    edtQuestion.isEnabled = false
+                    edtOption1.isEnabled = false
+                    edtOption2.isEnabled = false
+                    edtOption3.isEnabled = false
+                    edtOption4.isEnabled = false
+                    edtMarks.isEnabled = false
+                    spinnerCorrectOption.isEnabled = false
+                }
+           }
         }
 
         holder.btnEditQuestion.setOnClickListener {
-            holder.btnEditQuestion.visibility = View.GONE
-            holder.btnSaveQuestion.visibility = View.VISIBLE
+            holder.apply {
+                btnEditQuestion.visibility = View.GONE
+                btnSaveQuestion.visibility = View.VISIBLE
 
-            holder.edtQuestion.isEnabled = true
-            holder.edtOption1.isEnabled = true
-            holder.edtOption2.isEnabled = true
-            holder.edtOption3.isEnabled = true
-            holder.edtOption4.isEnabled = true
-            holder.edtMarks.isEnabled = true
-            holder.spinnerCorrectOption.isEnabled = true
+                edtQuestion.isEnabled = true
+                edtOption1.isEnabled = true
+                edtOption2.isEnabled = true
+                edtOption3.isEnabled = true
+                edtOption4.isEnabled = true
+                edtMarks.isEnabled = true
+                spinnerCorrectOption.isEnabled = true
+            }
 
         }
 
@@ -150,6 +191,7 @@ class QuestionAdapter(
         }
          */
     }
+
     interface onclickListner {
         fun onQuestionInteraction(question: DataModel.Question, position: Int)
         fun onSaveClicked(question: String, option1: String, option2: String, option3: String, option4: String, marks: String, answer: String)
