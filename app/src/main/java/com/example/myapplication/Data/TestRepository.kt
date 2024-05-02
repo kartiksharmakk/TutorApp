@@ -7,6 +7,7 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import java.util.Random
 
 class TestRepository(val database: FirebaseDatabase) {
     private val testRef = database.getReference("tests")
@@ -17,14 +18,37 @@ class TestRepository(val database: FirebaseDatabase) {
     fun generateQuestionId(testId: String): String{
         return  testRef.child(testId).child("questions").push().key!!
     }
-    fun saveTestAndQuestions(testId: String, questions: List<DataModel.Question>){
-        testRef.child(testId).setValue(DataModel.Test(testId,"", emptyList(), emptyList()))//Add data
 
+    fun generateRandomId(length: Int): String {
+        val charPool : List<Char> = ('a'..'z') + ('A'..'Z') + ('0'..'9') // Define the character pool
+        val random = Random()
+
+        return (1..length)
+            .map { random.nextInt(charPool.size) }
+            .map(charPool::get)
+            .joinToString("")
+    }
+
+    fun saveTestAndQuestions(testId: String, questions: ArrayList<DataModel.Question>,uid:String?){
+        //testRef.child(testId).setValue(DataModel.Test(testId,"", emptyList(), emptyList()))//Add data
+
+        for( i in questions){
+            i.questionId = generateRandomId(8)
+        }
+
+        testRef.child(testId).setValue(uid?.let {
+            DataModel.Test(testId,
+                it, emptyList(), questions)
+        })
+
+        /*
         questions.forEach { question ->
             val questionId = generateQuestionId(testId)
             question.questionId = questionId
             saveQuestion(question, testId)
         }
+
+         */
         Log.d("TestRepository","Test saved to DB")
     }
 

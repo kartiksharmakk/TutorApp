@@ -19,10 +19,10 @@ import com.example.myapplication.interfaces.QuestionClickListener
 
 class QuestionAdapter(
     var questions: MutableList<DataModel.Question>,
-    val onQuestionClickListener: QuestionClickListener
+    val onQuestionClickListener: QuestionAdapter.onclickListner
 ): RecyclerView.Adapter<QuestionAdapter.QuestionViewHolder>() {
 
-    var questionClickListener: QuestionClickListener? = null
+    val clickListner: QuestionAdapter.onclickListner =onQuestionClickListener
     class QuestionViewHolder(itemView: View): RecyclerView.ViewHolder(itemView){
         val edtQuestion: EditText = itemView.findViewById(R.id.edtQuestion)
         val edtOption1: EditText = itemView.findViewById(R.id.edtOption1)
@@ -113,7 +113,8 @@ class QuestionAdapter(
                 options[4] -> {option4}
                 else -> {""}
             }
-            questionClickListener?.onSaveClicked(question, option1, option2, option3, option4, marks, answer)
+            //questionClickListener?.onSaveClicked(question, option1, option2, option3, option4, marks, answer)
+            clickListner.onSaveClicked(question, option1, option2, option3, option4, marks, answer)
 
             if (question.isEmpty() || option1.isEmpty() || option2.isEmpty() || option3.isEmpty() || option4.isEmpty() || marks == null || answer.isEmpty()) {
                 // Show error message (e.g., Toast)
@@ -143,8 +144,14 @@ class QuestionAdapter(
 
         }
 
+        /*
         holder.itemView.setOnClickListener {
-            onQuestionClickListener.onQuestionInteraction(question, position)
+            clickListner.onQuestionInteraction(question, position)
         }
+         */
+    }
+    interface onclickListner {
+        fun onQuestionInteraction(question: DataModel.Question, position: Int)
+        fun onSaveClicked(question: String, option1: String, option2: String, option3: String, option4: String, marks: String, answer: String)
     }
 }

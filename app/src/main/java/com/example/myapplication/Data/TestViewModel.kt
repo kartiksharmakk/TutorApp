@@ -20,12 +20,15 @@ TestViewModel(var testRepository: TestRepository): ViewModel() {
     fun addQuestionToTest(testId: String, question: DataModel.Question){
         testRepository.addQuestionToTest(testId, question)
     }
-    fun saveTestAndQuestions(){
-        val testId = testRepository.generateTestId()
+    fun saveTestAndQuestions(testId: String,questionsList:ArrayList<DataModel.Question>,uid: String?){
+        //val testId = testRepository.generateTestId()
+        /*
         val questionsWithIds = _questions.value?.map{question ->
             question.copy(questionId = testRepository.generateQuestionId(testId))
         }?: emptyList()
-        testRepository.saveTestAndQuestions(testId, questionsWithIds)
+
+         */
+        testRepository.saveTestAndQuestions(testId, questionsList,uid)
     }
 
     fun addEmptyQuestion(){
