@@ -19,7 +19,7 @@
         android:id="@+id/studentProfileFragment"
         android:name="com.example.myapplication.Student.ProfileFragment"
         android:label="StudentProfileFragment"
-        tools:layout="@layout/fragment_profile_student"/>
+        tools:layout="@layout/fragment_student_profile"/>
     <fragment
         android:id="@+id/studentTestListFragment"
         android:name="com.example.myapplication.Student.TestListStudent"

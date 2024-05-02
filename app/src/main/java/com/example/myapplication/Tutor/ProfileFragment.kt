@@ -22,6 +22,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import android.widget.PopupMenu
+import android.widget.TextView
 import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
@@ -67,18 +68,23 @@ class ProfileFragment : Fragment() {
         val uid = Prefs.getUID(requireContext())
         val qrCodeBitmap = generateQRCode(uid!!)
         getAboutSection()
-        binding.imgOptionsProfile.setOnClickListener { view->
-            showPopUpOptions(view)
+        binding.apply {
+            val name = Prefs.getUsername(requireContext())
+            txtNameProfile.setText(name)
+            imgOptionsProfile.setOnClickListener { view->
+                showPopUpOptions(view)
+            }
+            imgEditImageProfile.setOnClickListener {
+                checkPermission()
+            }
+            txtGenerateQR.setOnClickListener {
+                showQR(qrCodeBitmap!!)
+            }
+            imgEditAbout.setOnClickListener {
+                showAboutPopUp()
+            }
         }
-        binding.imgEditImageProfile.setOnClickListener {
-            checkPermission()
-        }
-        binding.txtGenerateQR.setOnClickListener {
-            showQR(qrCodeBitmap!!)
-        }
-        binding.imgEditAbout.setOnClickListener {
-            showAboutPopUp()
-        }
+
         return binding.root
     }
 
@@ -103,7 +109,7 @@ class ProfileFragment : Fragment() {
                     true
                 }
                 R.id.log_out->{
-                    logout()
+                    logoutAlertDialog()
                     true
                 }
                 else -> false
@@ -417,6 +423,30 @@ class ProfileFragment : Fragment() {
     fun stopStatusShimmer(){
         binding.shimmerProfileStatus.stopShimmer()
         binding.shimmerProfileStatus.visibility = View.GONE
+    }
+
+    private fun logoutAlertDialog(){
+        val dialogInflater = LayoutInflater.from(requireContext())
+        val view = dialogInflater.inflate(R.layout.custom_alert_dialog, null)
+
+        val title: TextView = view.findViewById(R.id.txtTitle)
+        val text: TextView = view.findViewById(R.id.txtMessage)
+        val btnCreate: Button = view.findViewById(R.id.btnCreateCustomAlertDialog)
+        val  btnCancel: Button = view.findViewById(R.id.btnCancelAlertDialog1)
+
+        val alertDialog = AlertDialog.Builder(requireContext()).setView(view).setCancelable(false).create()
+        title.setText("Logging Out!")
+        text.setText("Are you sure? Do you want to logout?")
+        btnCreate.setText("Logout")
+        btnCancel.setText("Cancel")
+        btnCreate.setOnClickListener {
+            logout()
+            alertDialog.dismiss()
+        }
+        btnCancel.setOnClickListener {
+            alertDialog.dismiss()
+        }
+        alertDialog.show()
     }
     private fun logout(){
         try{

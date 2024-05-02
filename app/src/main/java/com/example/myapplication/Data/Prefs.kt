@@ -8,6 +8,7 @@ object Prefs {
     private lateinit var sharedPreferences: SharedPreferences
 
     private const val USER_IMAGE_URI = "image_uri"
+    private const val USER_NAME = "name"
     private const val USER_EMAIL = "user_email"
     private const val KEY_USERNAME = "username"
     private const val UNIQUE_ID = "unique_id"
@@ -27,6 +28,12 @@ object Prefs {
         return sharedPreferences
     }
 
+    fun saveUsername(context: Context, name: String){
+        getPrefs(context).edit().putString(USER_NAME,name).apply()
+    }
+    fun getUsername(context: Context): String?{
+        return getPrefs(context).getString(USER_NAME,null)
+    }
     fun getLoggedIn(context: Context, isLogged: Boolean){
         getPrefs(context).edit().putBoolean(KEY_LOGGED_IN, isLogged).apply()
     }

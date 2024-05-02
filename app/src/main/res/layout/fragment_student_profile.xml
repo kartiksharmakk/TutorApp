@@ -33,7 +33,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
                     <com.facebook.shimmer.ShimmerFrameLayout
-                        android:id="@+id/studentProfileImage"
+                        android:id="@+id/shimmerProfileImage"
                         android:foreground="@drawable/shimmer_overlay"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent">

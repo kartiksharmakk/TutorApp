@@ -193,8 +193,10 @@ class SigninFragment : Fragment() {
         databaseReference.child(email).addListenerForSingleValueEvent(object : ValueEventListener{
             override fun onDataChange(snapshot: DataSnapshot) {
                 if(snapshot.exists() && snapshot.hasChild("uid")){
+                    val name = snapshot.child("name").value.toString()
                     val uid = snapshot.child("uid").value.toString()
                     Prefs.saveUID(requireContext(),uid)
+                    Prefs.saveUsername(requireContext(),name)
                 }else{
                     Log.d("SignInFragment","Error in updating uid to SharedPreferences (updateSharedPreferences())")
                 }
