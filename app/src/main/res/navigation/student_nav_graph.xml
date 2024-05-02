@@ -20,5 +20,10 @@
         android:name="com.example.myapplication.Student.ProfileFragment"
         android:label="StudentProfileFragment"
         tools:layout="@layout/fragment_profile_student"/>
+    <fragment
+        android:id="@+id/studentTestListFragment"
+        android:name="com.example.myapplication.Student.TestListStudent"
+        android:label="TstListStudents"
+        tools:layout="@layout/fragment_test_list_student"/>
 
 </navigation>

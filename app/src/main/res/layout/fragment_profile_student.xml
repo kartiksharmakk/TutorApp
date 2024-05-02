@@ -7,7 +7,7 @@
     tools:context=".Student.ProfileFragment">
 
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -139,8 +139,133 @@
                 app:layout_constraintStart_toEndOf="@+id/text20"
                 app:layout_constraintTop_toBottomOf="@+id/txtStudentNameProfile" />
 
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cardView3"
+                android:layout_width="160dp"
+                android:layout_height="100dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="20dp"
+                android:elevation="8dp"
+                app:cardCornerRadius="16dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/txtAboutStudentProfile">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <TextView
+                        android:id="@+id/textView22"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:text="Tests Assigned"
+                        android:textSize="18dp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <ImageView
+                        android:id="@+id/imageView7"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_marginStart="8dp"
+                        android:src="@drawable/test"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/textView22" />
+
+                    <TextView
+                        android:id="@+id/txtStudentTestCount"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginBottom="16dp"
+                        android:fontFamily="sans-serif-black"
+                        android:text="16"
+                        android:textSize="24dp"
+                        android:textStyle="bold"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toEndOf="@+id/imageView7" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="160dp"
+                android:layout_height="100dp"
+                android:layout_marginEnd="16dp"
+                android:elevation="8dp"
+                app:cardCornerRadius="16dp"
+                android:layout_marginTop="20dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/txtAboutStudentProfile">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <TextView
+                        android:id="@+id/textView23"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:text="Tests Attempted"
+                        android:textSize="18dp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <ImageView
+                        android:id="@+id/imageView8"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_marginStart="8dp"
+                        android:src="@drawable/group"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/textView23" />
+
+                    <TextView
+                        android:id="@+id/txtTestAttemptedCount"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginBottom="16dp"
+                        android:text="4"
+                        android:textSize="24dp"
+                        android:textStyle="bold"
+                        android:fontFamily="sans-serif-black"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toEndOf="@+id/imageView8" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </androidx.cardview.widget.CardView>
+
+            <TextView
+                android:id="@+id/txtGenerateQR"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="Show profile QR Code"
+                android:textStyle="bold"
+                android:textSize="18dp"
+                android:fontFamily="sans-serif-black"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/cardView3" />
+
+            <ImageView
+                android:id="@+id/imgStudentProfileQR"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/txtGenerateQR"
+                tools:src="@tools:sample/avatars" />
+
         </androidx.constraintlayout.widget.ConstraintLayout>
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
 
     <TextView
         android:id="@+id/textView34"

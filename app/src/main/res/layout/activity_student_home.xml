@@ -21,7 +21,7 @@
     <com.github.kwasow.bottomnavigationcircles.BottomNavigationCircles
         android:id="@+id/studentBottomNav"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         app:menu="@menu/student_menu"
         app:circleColor="@color/primary"
         app:darkIcon="true"

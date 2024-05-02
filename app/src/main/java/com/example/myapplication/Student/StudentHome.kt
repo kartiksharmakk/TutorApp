@@ -23,7 +23,7 @@ class StudentHome : AppCompatActivity() {
                     true
                 }
                 R.id.st_test->{
-                    navController.navigate(R.id.studentTestFragment)
+                    navController.navigate(R.id.studentTestListFragment)
                     true
                 }
                 R.id.st_profile->{
