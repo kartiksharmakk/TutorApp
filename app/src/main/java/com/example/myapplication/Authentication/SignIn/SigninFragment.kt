@@ -18,6 +18,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.example.myapplication.Data.AuthenticationViewModel
 import com.example.myapplication.Data.Prefs
+import com.example.myapplication.Data.UserType
 import com.example.myapplication.Functions.CommonFunctions.getToastShort
 import com.example.myapplication.Functions.CommonFunctions.loadFragmentFromFragment
 import com.example.myapplication.R
@@ -197,6 +198,11 @@ class SigninFragment : Fragment() {
                     val uid = snapshot.child("uid").value.toString()
                     Prefs.saveUID(requireContext(),uid)
                     Prefs.saveUsername(requireContext(),name)
+                    if(uid.startsWith("st")){
+                        Prefs.saveUserType(requireContext(),UserType.STUDENT)
+                    }else{
+                        Prefs.saveUserType(requireContext(),UserType.TEACHER)
+                    }
                 }else{
                     Log.d("SignInFragment","Error in updating uid to SharedPreferences (updateSharedPreferences())")
                 }
@@ -209,11 +215,18 @@ class SigninFragment : Fragment() {
 
     fun showHidePassowrd(){
         if(isPassVisible){
-            binding.imgShowPassSignIn.setImageResource(R.drawable.showpassword)
-            binding.edtPasswordSignIn.transformationMethod = PasswordTransformationMethod.getInstance()
+            binding.apply {
+                imgShowPassSignIn.setImageResource(R.drawable.showpassword)
+                edtPasswordSignIn.transformationMethod = PasswordTransformationMethod.getInstance()
+                edtPasswordSignIn.setSelection(edtPasswordSignIn.text.length)
+            }
+
         }else{
-            binding.imgShowPassSignIn.setImageResource(R.drawable.hidepassword)
-            binding.edtPasswordSignIn.transformationMethod = null
+            binding.apply {
+                imgShowPassSignIn.setImageResource(R.drawable.hidepassword)
+                edtPasswordSignIn.transformationMethod = null
+                edtPasswordSignIn.setSelection(edtPasswordSignIn.text.length)
+            }
         }
         isPassVisible = !isPassVisible
     }

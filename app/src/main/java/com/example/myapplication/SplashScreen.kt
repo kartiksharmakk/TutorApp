@@ -9,6 +9,8 @@ import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import com.example.myapplication.Authentication.AuthActivity
 import com.example.myapplication.Data.Prefs
+import com.example.myapplication.Data.UserType
+import com.example.myapplication.Student.StudentHome
 import com.example.myapplication.Tutor.TutorHome
 import com.example.myapplication.databinding.ActivitySplashBinding
 
@@ -29,10 +31,15 @@ class SplashScreen : AppCompatActivity() {
         binding.imgSplash.startAnimation(anim)
         Handler().postDelayed({
             val authIntent = Intent(this, AuthActivity::class.java)
-            val homeIntent = Intent(this, TutorHome::class.java)
+            val tutorHomeIntent = Intent(this, TutorHome::class.java)
+            val studentHomeIntent = Intent(this, StudentHome::class.java)
             val loggedIn = Prefs.isLoggedIn(this)
             if (loggedIn!!){
-                startActivity(homeIntent)
+                if(Prefs.getUserType(this).equals(UserType.STUDENT.toString())){
+                    startActivity(studentHomeIntent)
+                }else{
+                    startActivity(tutorHomeIntent)
+                }
             }else{
                 startActivity(authIntent)
             }

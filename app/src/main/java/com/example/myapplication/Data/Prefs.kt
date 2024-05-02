@@ -13,6 +13,7 @@ object Prefs {
     private const val KEY_USERNAME = "username"
     private const val UNIQUE_ID = "unique_id"
     private const val DEFAULT_USERNAME = ""
+    private const val USER_TYPE = "user_type"
     private const val KEY_LOGGED_IN = "loggedIn"
     private const val VERIFICATION_ID_KEY = "verificationId"
 
@@ -68,6 +69,13 @@ object Prefs {
     }
     fun getUSerEmailEncoded(context: Context): String?{
         return getPrefs(context).getString(USER_EMAIL, null)
+    }
+
+    fun saveUserType(context: Context, type: UserType){
+        getPrefs(context).edit().putString(USER_TYPE, type.toString()).apply()
+    }
+    fun getUserType(context: Context): String?{
+        return getPrefs(context).getString(USER_TYPE, null)
     }
 
     fun clearPrefs() {

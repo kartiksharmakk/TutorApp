@@ -131,22 +131,34 @@ class SignupFragment : Fragment() {
 
     fun showHidePassowrd(){
         if(isPassVisible){
-            binding.imgShowPasswordSignUp.setImageResource(R.drawable.showpassword)
-            binding.edtPasswordSignUp.transformationMethod = PasswordTransformationMethod.getInstance()
+            binding.apply {
+                imgShowPasswordSignUp.setImageResource(R.drawable.showpassword)
+                edtPasswordSignUp.transformationMethod = PasswordTransformationMethod.getInstance()
+                edtPasswordSignUp.setSelection(edtPasswordSignUp.text.length)
+            }
         }else{
-            binding.imgShowPasswordSignUp.setImageResource(R.drawable.hidepassword)
-            binding.edtPasswordSignUp.transformationMethod = null
+            binding.apply {
+                imgShowPasswordSignUp.setImageResource(R.drawable.hidepassword)
+                edtPasswordSignUp.transformationMethod = null
+                edtPasswordSignUp.setSelection(edtPasswordSignUp.text.length)
+            }
         }
         isPassVisible = !isPassVisible
     }
 
     fun showHideConfirmPassword(){
         if(isConfirmPassVisible){
-            binding.imgShowConfirmPasswordSignUp.setImageResource(R.drawable.showpassword)
-            binding.edtConfirmPasswordSignUp.transformationMethod = PasswordTransformationMethod.getInstance()
+            binding.apply {
+                imgShowConfirmPasswordSignUp.setImageResource(R.drawable.showpassword)
+                edtConfirmPasswordSignUp.transformationMethod = PasswordTransformationMethod.getInstance()
+                edtConfirmPasswordSignUp.setSelection(edtConfirmPasswordSignUp.text.length)
+            }
         }else{
-            binding.imgShowConfirmPasswordSignUp.setImageResource(R.drawable.hidepassword)
-            binding.edtConfirmPasswordSignUp.transformationMethod = null
+            binding.apply {
+                imgShowConfirmPasswordSignUp.setImageResource(R.drawable.hidepassword)
+                edtConfirmPasswordSignUp.transformationMethod = null
+                edtConfirmPasswordSignUp.setSelection(edtConfirmPasswordSignUp.text.length)
+            }
         }
         isConfirmPassVisible = !isConfirmPassVisible
     }
