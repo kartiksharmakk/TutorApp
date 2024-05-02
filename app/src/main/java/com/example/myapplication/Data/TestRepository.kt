@@ -12,7 +12,7 @@ class TestRepository(val database: FirebaseDatabase) {
     private val testRef = database.getReference("tests")
 
     fun generateTestId(): String{
-        return "test" + testRef.push().key!!
+        return "test${testRef.push().key!!}"
     }
     fun generateQuestionId(testId: String): String{
         return  testRef.child(testId).child("questions").push().key!!

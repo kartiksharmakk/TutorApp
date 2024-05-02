@@ -106,6 +106,7 @@ class CreateTestFragment : Fragment(), QuestionClickListener {
         marks: String,
         answer: String
     ) {
-        viewModel.addQuestionToTest("", DataModel.Question("", question,listOf(option1, option2, option3, option4), answer, marks.toInt()))
+        val newQuestion = DataModel.Question("", question, listOf(option1, option2, option3, option4), answer, marks.toInt())
+        viewModel.addQuestion(newQuestion)
     }
 }
