@@ -28,7 +28,7 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.database
 
-class CreateTestFragment : Fragment(), QuestionClickListener {
+class CreateTestFragment : Fragment(),  QuestionAdapter.onclickListner {
     lateinit var binding: FragmentCreateTestBinding
     lateinit var adapter: QuestionAdapter
 
@@ -37,6 +37,8 @@ class CreateTestFragment : Fragment(), QuestionClickListener {
     val viewModelFactory = TestViewModelFactory(testRepository)
     val viewModel: TestViewModel by viewModels { viewModelFactory }
     var testId = ""
+    var uid: String? = ""
+    var questionsList = ArrayList<DataModel.Question>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -45,7 +47,7 @@ class CreateTestFragment : Fragment(), QuestionClickListener {
         binding = FragmentCreateTestBinding.inflate(inflater, container, false)
         viewModel.testRepository = testRepository
 
-        val uid = Prefs.getUID(requireContext())
+        uid = Prefs.getUID(requireContext())
         viewModel.initNewTest(uid!!)
         viewModel.addEmptyQuestion()
         adapter = QuestionAdapter(viewModel.questions.value?: mutableListOf(), this)
@@ -84,7 +86,7 @@ class CreateTestFragment : Fragment(), QuestionClickListener {
 
         btnCreate.setOnClickListener {
             testId = testRepository.generateTestId()
-            viewModel.saveTestAndQuestions()
+            viewModel.saveTestAndQuestions(testId,questionsList,uid)
             alertDialog.dismiss()
         }
         btnCancel.setOnClickListener {
@@ -94,7 +96,7 @@ class CreateTestFragment : Fragment(), QuestionClickListener {
     }
 
     override fun onQuestionInteraction(question: DataModel.Question, position: Int) {
-        viewModel.addQuestionToTest(testId, question)
+        //viewModel.addQuestionToTest(testId, question)
     }
 
     override fun onSaveClicked(
@@ -108,5 +110,7 @@ class CreateTestFragment : Fragment(), QuestionClickListener {
     ) {
         val newQuestion = DataModel.Question("", question, listOf(option1, option2, option3, option4), answer, marks.toInt())
         viewModel.addQuestion(newQuestion)
+        questionsList.add(newQuestion)
+        //viewModel.addQuestion(newQuestion)
     }
 }
