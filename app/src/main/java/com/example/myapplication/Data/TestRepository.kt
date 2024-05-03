@@ -7,10 +7,12 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import kotlinx.coroutines.tasks.await
 import java.util.Random
 
 class TestRepository(val database: FirebaseDatabase) {
     private val testRef = database.getReference("tests")
+    private val groupRef = database.getReference("Groups")
 
     fun generateTestId(): String{
         return "test${testRef.push().key!!}"
@@ -70,9 +72,9 @@ class TestRepository(val database: FirebaseDatabase) {
                     val testList = mutableListOf<DataModel.Test>()
                     for(child in snapshot.children){
                         val test = child.getValue(DataModel.Test::class.java)
-                        if(test != null && test.assignedTo.contains(studentId)){
+                      /*  if(test != null && test.assignedTo.contains(studentId)){
                             testList.add(test)
-                        }
+                        }*/
                     }
                     liveDataTests.postValue(testList.toList())
                 }else{
@@ -161,5 +163,26 @@ class TestRepository(val database: FirebaseDatabase) {
             }
         })
         return  liveDataTests
+    }
+
+    fun getStudentByGroup(groupId: String): List<String>{
+        val students: MutableList<String> = mutableListOf()
+        val query = groupRef.orderByChild("groupId").equalTo(groupId)
+        query.addListenerForSingleValueEvent(object : ValueEventListener{
+            override fun onDataChange(snapshot: DataSnapshot) {
+                for (groupSnapshot in snapshot.children){
+                    for(studentSnapshot in groupSnapshot.child("students").children){
+                        val studentId = studentSnapshot.value.toString()
+                        studentId?.let { students.add(it) }
+                    }
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                TODO("Not yet implemented")
+            }
+
+        })
+        return students
     }
 }

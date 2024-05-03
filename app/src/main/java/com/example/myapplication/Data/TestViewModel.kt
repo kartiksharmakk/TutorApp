@@ -12,6 +12,9 @@ TestViewModel(var testRepository: TestRepository): ViewModel() {
     private val _questions = MutableLiveData<MutableList<DataModel.Question>>()
     val questions: LiveData<MutableList<DataModel.Question>> = _questions
 
+    private val _allotedTo = MutableLiveData<MutableList<DataModel.TestAssignedTo>>()
+    val allotedTo: LiveData<MutableList<DataModel.TestAssignedTo>> = _allotedTo
+
     fun addQuestion(question: DataModel.Question){
         val currentQuestions = _questions.value ?: mutableListOf()
         currentQuestions.add(question)
@@ -40,5 +43,42 @@ TestViewModel(var testRepository: TestRepository): ViewModel() {
     fun initNewTest(creatorId: String){
         val newTest = DataModel.Test("", creatorId, emptyList(), mutableListOf())
         _test.value = newTest
+    }
+
+    fun addSelectedStudent(student: DataModel.TestAssignedTo){
+       val selectedStudents = _allotedTo.value?.toMutableSet() ?: mutableListOf()
+       selectedStudents.add(student.copy(hasAttempted = false))
+        _allotedTo.value = selectedStudents.toMutableList()
+    }
+
+    fun removeSelectedStudent(student: DataModel.TestAssignedTo){
+        val selectedStudents = _allotedTo.value?.toMutableList() ?: mutableListOf()
+        selectedStudents.remove(student)
+        _allotedTo.value = selectedStudents
+
+    }
+
+    fun getStudentByGroup(groupId: String): List<String>?{
+        return testRepository.getStudentByGroup(groupId)
+    }
+    fun addSelectedGroupStudents(groupId: String){
+        val studentsInGroup = getStudentByGroup(groupId)
+        studentsInGroup?.let {
+            val selectedStudents = _allotedTo.value?.toMutableList() ?: mutableListOf()
+            it.forEach { studentId ->
+                selectedStudents.add(DataModel.TestAssignedTo(studentId,false))
+            }
+            _allotedTo.value = selectedStudents
+        }
+    }
+    fun removeSelectedGroupStudents(groupId: String){
+        val studentsInGroup = getStudentByGroup(groupId)
+        studentsInGroup?.let{
+            val selectedStudents = _allotedTo.value?.toMutableList() ?: mutableListOf()
+            it.forEach { studentId ->
+                selectedStudents.retainAll{it.studentId == studentId}
+            }
+            _allotedTo.value = selectedStudents
+        }
     }
 }

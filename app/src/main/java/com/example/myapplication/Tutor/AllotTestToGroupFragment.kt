@@ -15,6 +15,8 @@ class AllotTestToGroupFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentAllotTestToGroupBinding.inflate(inflater, container, false)
+
         return binding.root
     }
+
 }

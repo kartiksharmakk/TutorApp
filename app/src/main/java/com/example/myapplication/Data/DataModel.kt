@@ -55,7 +55,7 @@ object DataModel{
     data class Test(
         val testId: String,
         val creatorId: String,
-        val assignedTo: List<String>,
+        val assignedTo: List<TestAssignedTo>,
         var questions: List<Question>
     )
 
@@ -65,5 +65,10 @@ object DataModel{
         var options: List<String>,
         var correctOption: String,
         var marks: Int
+    )
+
+    data class TestAssignedTo(
+        val studentId: String,
+        val hasAttempted: Boolean
     )
 }

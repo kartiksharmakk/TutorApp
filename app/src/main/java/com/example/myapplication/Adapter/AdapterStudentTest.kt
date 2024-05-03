@@ -5,30 +5,39 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.BaseAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.myapplication.Data.DataModel
-import com.example.myapplication.Data.TutorViewModel
+import com.example.myapplication.Data.TestViewModel
 import com.example.myapplication.databinding.CustomSelectStudentBinding
 import com.facebook.shimmer.Shimmer
-import com.facebook.shimmer.ShimmerDrawable
 import com.google.firebase.storage.FirebaseStorage
 
-class SelectStudentsAdapter(var context: Context,var list: List<DataModel.Students>, val viewModel: TutorViewModel): RecyclerView.Adapter<SelectStudentsAdapter.StudentViewHolder>() {
-
+class AdapterStudentTest(var context: Context, var list: List<DataModel.Students>, val viewModel: TestViewModel): RecyclerView.Adapter<AdapterStudentTest.TestViewHolder>() {
     val selectedStudentIds = mutableListOf<String>()
-    class StudentViewHolder(val binding: CustomSelectStudentBinding, private val adapter: SelectStudentsAdapter): RecyclerView.ViewHolder(binding.root){
-        fun bind(context: Context, student: DataModel.Students, selectedStudentIds: MutableList<String>, viewModel: TutorViewModel){
+    override fun onCreateViewHolder(
+        parent: ViewGroup,
+        viewType: Int
+    ): AdapterStudentTest.TestViewHolder {
+        val binding = CustomSelectStudentBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return TestViewHolder(binding, this)
+    }
+
+    override fun onBindViewHolder(holder: AdapterStudentTest.TestViewHolder, position: Int) {
+        val student = list[position]
+        holder.bind(context, student, selectedStudentIds, viewModel)
+    }
+
+    override fun getItemCount(): Int {
+        return list.size
+    }
+
+    class TestViewHolder(val binding: CustomSelectStudentBinding, val adapter: AdapterStudentTest): RecyclerView.ViewHolder(binding.root){
+        fun bind(context: Context, student: DataModel.Students, selectedStudentIds: MutableList<String>, viewModel: TestViewModel){
             binding.apply {
-                val shimmer = Shimmer.AlphaHighlightBuilder()
-                    .setDuration(1000) // Adjust shimmer animation duration as needed
-                    .setBaseAlpha(0.7f)
-                    .setHighlightAlpha(0.6f)
-                    .setDirection(Shimmer.Direction.LEFT_TO_RIGHT)
-                    .setAutoStart(true)
-                    .build()
-                Log.d("Select Student","Image: ${student.image}")
+                val shimmer = Shimmer.AlphaHighlightBuilder().setDuration(1000).setBaseAlpha(0.7f)
+                    .setHighlightAlpha(0.6f).setDirection(Shimmer.Direction.LEFT_TO_RIGHT).setAutoStart(true).build()
+                Log.d("AdapterStudentTest","Image: ${student.image}")
                 shimmerSelectStudentName.startShimmer()
                 shimmerSelectStudentPhone.startShimmer()
 
@@ -37,7 +46,7 @@ class SelectStudentsAdapter(var context: Context,var list: List<DataModel.Studen
                 storageReference.downloadUrl.addOnSuccessListener { uri ->
                     Glide.with(context)
                         .load(uri)
-                        .into(binding.imgSelectStudent)
+                        .into(imgSelectStudent)
                 }.addOnFailureListener { exception ->
                     Log.e("Select Student", "Failed to get download URL: ${exception.message}")
                 }
@@ -48,8 +57,7 @@ class SelectStudentsAdapter(var context: Context,var list: List<DataModel.Studen
                 var isSelected = selectedStudentIds.contains(student.studentId)
                 imgRadioButton.visibility = if (isSelected) View.VISIBLE else View.GONE
 
-
-                cardRadioButton.setOnClickListener {
+                binding.cardRadioButton.setOnClickListener {
                     if(isSelected){
                         selectedStudentIds.remove(student.studentId)
                         imgRadioButton.visibility = View.GONE
@@ -66,23 +74,4 @@ class SelectStudentsAdapter(var context: Context,var list: List<DataModel.Studen
 
         }
     }
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): StudentViewHolder {
-        val binding = CustomSelectStudentBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return StudentViewHolder(binding, this)
-    }
-
-    override fun getItemCount(): Int {
-        return list.size
-    }
-
-    override fun onBindViewHolder(holder: StudentViewHolder, position: Int) {
-        val student = list[position]
-        holder.bind(context,student, selectedStudentIds, viewModel)
-    }
-
-    fun getSelectStudentIds(): List<String>{
-        return selectedStudentIds
-    }
-
 }
