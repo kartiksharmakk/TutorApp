@@ -151,7 +151,7 @@ class QuestionAdapter(
                         else -> {""}
                     }
                     //questionClickListener?.onSaveClicked(question, option1, option2, option3, option4, marks, answer)
-                    clickListner.onSaveClicked(question, option1, option2, option3, option4, marks, answer)
+                    clickListner.onSaveClicked(position, question, option1, option2, option3, option4, marks, answer)
 
                     if (question.isEmpty() || option1.isEmpty() || option2.isEmpty() || option3.isEmpty() || option4.isEmpty() || marks == null || answer.isEmpty()) {
                         // Show error message (e.g., Toast)
@@ -183,8 +183,6 @@ class QuestionAdapter(
                 spinnerCorrectOption.isEnabled = true
             }
 
-            clickListner.onEditClicked(position)
-
         }
 
 
@@ -196,7 +194,6 @@ class QuestionAdapter(
 
     interface onclickListner {
         fun onQuestionInteraction(question: DataModel.Question, position: Int)
-        fun onSaveClicked(question: String, option1: String, option2: String, option3: String, option4: String, marks: String, answer: String)
-        fun onEditClicked(position: Int)
+        fun onSaveClicked(position: Int, question: String, option1: String, option2: String, option3: String, option4: String, marks: String, answer: String)
     }
 }
