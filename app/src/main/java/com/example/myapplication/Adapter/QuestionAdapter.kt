@@ -183,6 +183,8 @@ class QuestionAdapter(
                 spinnerCorrectOption.isEnabled = true
             }
 
+            clickListner.onEditClicked(position)
+
         }
 
 
@@ -195,5 +197,6 @@ class QuestionAdapter(
     interface onclickListner {
         fun onQuestionInteraction(question: DataModel.Question, position: Int)
         fun onSaveClicked(question: String, option1: String, option2: String, option3: String, option4: String, marks: String, answer: String)
+        fun onEditClicked(position: Int)
     }
 }
