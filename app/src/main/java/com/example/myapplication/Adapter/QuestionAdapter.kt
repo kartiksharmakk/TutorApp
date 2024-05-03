@@ -20,10 +20,10 @@ import com.example.myapplication.interfaces.QuestionClickListener
 
 class QuestionAdapter(
     var questions: MutableList<DataModel.Question>,
-    val onQuestionClickListener: QuestionAdapter.onclickListner
+    onclickListner: QuestionAdapter.onclickListner
 ): RecyclerView.Adapter<QuestionAdapter.QuestionViewHolder>() {
 
-    val clickListner: QuestionAdapter.onclickListner =onQuestionClickListener
+    val clickListner: QuestionAdapter.onclickListner =onclickListner
     class QuestionViewHolder(itemView: View): RecyclerView.ViewHolder(itemView){
         val edtQuestion: EditText = itemView.findViewById(R.id.edtQuestion)
         val edtOption1: EditText = itemView.findViewById(R.id.edtOption1)
@@ -48,7 +48,7 @@ class QuestionAdapter(
 
     override fun onBindViewHolder(holder: QuestionViewHolder, position: Int) {
         holder.itemView.setOnClickListener {
-            onQuestionClickListener.onQuestionInteraction(questions[position],position)
+            clickListner.onQuestionInteraction(questions[position],position)
         }
 
         fun inputValidation(): Boolean{
@@ -185,11 +185,11 @@ class QuestionAdapter(
 
         }
 
-        /*
+
         holder.itemView.setOnClickListener {
             clickListner.onQuestionInteraction(question, position)
         }
-         */
+
     }
 
     interface onclickListner {
