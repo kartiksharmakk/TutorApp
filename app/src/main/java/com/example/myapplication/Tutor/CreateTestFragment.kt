@@ -116,7 +116,7 @@ class CreateTestFragment : Fragment(),  QuestionAdapter.onclickListner {
                 answer,
                 marks.toInt()
             )
-            viewModel.addQuestion(newQuestion)
+           // viewModel.addQuestion(newQuestion)
             questionsList.add(newQuestion)
         }
         //viewModel.addQuestion(newQuestion)
