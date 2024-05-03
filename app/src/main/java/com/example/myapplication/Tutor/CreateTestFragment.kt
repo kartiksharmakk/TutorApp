@@ -121,4 +121,8 @@ class CreateTestFragment : Fragment(),  QuestionAdapter.onclickListner {
         }
         //viewModel.addQuestion(newQuestion)
     }
+
+    override fun onEditClicked(position:Int) {
+        questionsList.removeAt(position)
+    }
 }
