@@ -34,5 +34,10 @@
         android:name="com.example.myapplication.Tutor.CreateTestFragment"
         android:label="CreateTestFragment"
         tools:layout="@layout/fragment_create_test"/>
+    <fragment
+        android:id="@+id/allotTest"
+        android:name="com.example.myapplication.Tutor.AllotTestFragment"
+        android:label="AllotTest"
+        tools:layout="@layout/fragment_allot_test"/>
 
 </navigation>

@@ -57,15 +57,17 @@ class AdapterStudentTest(var context: Context, var list: List<DataModel.Students
                 var isSelected = selectedStudentIds.contains(student.studentId)
                 imgRadioButton.visibility = if (isSelected) View.VISIBLE else View.GONE
 
-                binding.cardRadioButton.setOnClickListener {
+                cardRadioButton.setOnClickListener {
+                    val studentId = student.studentId
+                    val st = DataModel.TestAssignedTo(studentId, false)
                     if(isSelected){
                         selectedStudentIds.remove(student.studentId)
                         imgRadioButton.visibility = View.GONE
-                        viewModel.removeSelectedStudent(student.studentId)
+                        viewModel.removeSelectedStudent(st)
                     }else{
                         selectedStudentIds.add(student.studentId)
                         imgRadioButton.visibility = View.VISIBLE
-                        viewModel.addSelectedStudent(student.studentId)
+                        viewModel.addSelectedStudent(st)
                     }
                     adapter.notifyItemChanged(adapterPosition)
                     isSelected = !isSelected

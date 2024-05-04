@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.navigation.fragment.findNavController
 import com.example.myapplication.Adapter.TestPagerAdapter
 import com.example.myapplication.Data.TestViewModel
 import com.example.myapplication.R
@@ -19,6 +20,9 @@ class AllotTestFragment : Fragment() {
     ): View? {
         binding = FragmentAllotTestBinding.inflate(inflater, container, false)
         binding.apply {
+            imgBackAllotTest.setOnClickListener {
+                findNavController().navigateUp()
+            }
             viewPagerTest.adapter = TestPagerAdapter(requireActivity())
             TabLayoutMediator(tabTest, viewPagerTest){tab, position ->
                 when(position){

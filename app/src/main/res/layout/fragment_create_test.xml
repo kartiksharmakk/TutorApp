@@ -30,7 +30,22 @@
         app:layout_constraintStart_toEndOf="@+id/imgBackCreateTest"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <ImageView
+    <TextView
+        android:id="@+id/txtAssignTest"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:textStyle="bold"
+        android:textSize="18dp"
+        android:text="Assign Test"
+        android:textColor="@color/white"
+        android:padding="8dp"
+        android:background="@color/black"
+        android:fontFamily="sans-serif-black"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+
+    <!--<ImageView
         android:id="@+id/imgSaveCreateTest"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -39,6 +54,7 @@
         android:src="@drawable/green_tick"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+        -->
 
     <ScrollView
         android:id="@+id/scrollTest"

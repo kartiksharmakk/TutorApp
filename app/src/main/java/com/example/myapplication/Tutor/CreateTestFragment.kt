@@ -61,9 +61,12 @@ class CreateTestFragment : Fragment(),  QuestionAdapter.onclickListner {
         binding.imgBackCreateTest.setOnClickListener {
             findNavController().popBackStack()
         }
-        binding.imgSaveCreateTest.setOnClickListener {
-           showPopUp()
+        binding.txtAssignTest.setOnClickListener {
+            findNavController().navigate(R.id.allotTest)
         }
+        /*binding.imgSaveCreateTest.setOnClickListener {
+           showPopUp()
+        }*/
         binding.imgAddQuestion.setOnClickListener {
             viewModel.addEmptyQuestion()
             adapter.notifyItemInserted(adapter.itemCount)
