@@ -31,16 +31,24 @@ class TestRepository(val database: FirebaseDatabase) {
             .joinToString("")
     }
 
-    fun saveTestAndQuestions(testId: String, questions: ArrayList<DataModel.Question>,uid:String?){
+    fun saveTestAndQuestions(testId: String, questions: ArrayList<DataModel.Question>,uid:String?,studentsList: ArrayList<String>){
         //testRef.child(testId).setValue(DataModel.Test(testId,"", emptyList(), emptyList()))//Add data
 
         for( i in questions){
             i.questionId = generateRandomId(8)
         }
 
+        val testAssignedToStudentsList = ArrayList<DataModel.TestAssignedTo>()
+
+        for (studentId in studentsList) {
+            val testAssignedTo = DataModel.TestAssignedTo(studentId, false)
+            testAssignedToStudentsList.add(testAssignedTo)
+        }
+
+
         testRef.child(testId).setValue(uid?.let {
             DataModel.Test(testId,
-                it, emptyList(), questions)
+                it, testAssignedToStudentsList , questions)
         })
 
         /*

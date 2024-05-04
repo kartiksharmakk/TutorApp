@@ -77,5 +77,7 @@ dependencies {
     annotationProcessor("com.github.bumptech.glide:compiler:4.12.0")
     implementation("com.github.yalantis:ucrop:2.2.6")
     implementation("com.facebook.shimmer:shimmer:0.5.0")
+    implementation("org.greenrobot:eventbus:3.3.1")
+    implementation("com.google.code.gson:gson:2.10.1")
 
 }
