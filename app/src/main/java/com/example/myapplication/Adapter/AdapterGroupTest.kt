@@ -14,7 +14,7 @@ import com.facebook.shimmer.Shimmer
 import com.google.firebase.storage.FirebaseStorage
 
 class AdapterGroupTest(var context: Context, var list: List<DataModel.Group>, var viewModel: TestViewModel): RecyclerView.Adapter<AdapterGroupTest.TestViewHolder>() {
-    val selectedStudentIds = mutableListOf<String>()
+    val selectedGroupIds = mutableListOf<String>()
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
@@ -25,7 +25,7 @@ class AdapterGroupTest(var context: Context, var list: List<DataModel.Group>, va
 
     override fun onBindViewHolder(holder: AdapterGroupTest.TestViewHolder, position: Int) {
         val group = list[position]
-        holder.bind(context, group, selectedStudentIds, viewModel)
+        holder.bind(context, group, selectedGroupIds, viewModel)
     }
 
     override fun getItemCount(): Int {
@@ -33,7 +33,7 @@ class AdapterGroupTest(var context: Context, var list: List<DataModel.Group>, va
     }
 
     class TestViewHolder(val binding: CustomSelectGroupLayoutBinding, val adapter: AdapterGroupTest): RecyclerView.ViewHolder(binding.root){
-        fun bind(context: Context, group: DataModel.Group, selectedStudentIds: MutableList<String>, viewModel: TestViewModel){
+        fun bind(context: Context, group: DataModel.Group, selectedGroupIds: MutableList<String>, viewModel: TestViewModel){
             binding.apply {
                 val shimmer = Shimmer.AlphaHighlightBuilder().setDuration(1000).setBaseAlpha(0.7f)
                     .setHighlightAlpha(0.6f).setDirection(Shimmer.Direction.LEFT_TO_RIGHT).setAutoStart(true).build()
@@ -51,22 +51,23 @@ class AdapterGroupTest(var context: Context, var list: List<DataModel.Group>, va
                 }
 
                 txtSelectGroupName.setText(group.groupName)
-                var isSelected = selectedStudentIds.all{selectedStudentIds.contains(it)}
+                var isSelected = selectedGroupIds.contains(group.groupId)
                 imgRadioButtonGroup.visibility = if (isSelected) View.VISIBLE else View.GONE
 
                 cardRadioButtonGroup.setOnClickListener {
-                    val students = group.students
-                    if(isSelected){
-                        selectedStudentIds.removeAll(students)
-                        imgRadioButtonGroup.visibility = View.GONE
-                        viewModel.removeSelectedGroupStudents(group.groupId)
-                    }else{
-                        selectedStudentIds.addAll(group.students)
+                    val newSelected = !isSelected
+                    if (newSelected) {
+                        adapter.selectedGroupIds.add(group.groupId)
                         imgRadioButtonGroup.visibility = View.VISIBLE
+                        // Add selected group students to view model
                         viewModel.addSelectedGroupStudents(group.groupId)
+                    } else {
+                        adapter.selectedGroupIds.remove(group.groupId)
+                        imgRadioButtonGroup.visibility = View.GONE
+                        // Remove selected group students from view model
+                        viewModel.removeSelectedGroupStudents(group.groupId)
                     }
                     adapter.notifyItemChanged(adapterPosition)
-                    isSelected = !isSelected
                 }
             }
         }
