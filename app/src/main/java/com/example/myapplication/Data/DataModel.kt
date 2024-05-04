@@ -2,21 +2,21 @@ package com.example.myapplication.Data
 
 object DataModel{
     data class TeacherModel(
-        val uid: String,
-        val name: String,
-        val email: String,
-        val groups: String,
-        val tests: String
+        val uid: String = "",
+        val name: String = "",
+        val email: String = "",
+        val groups: String = "",
+        val tests: String = ""
     )
 
     data class UserCredentials(
-        val uid: String,
-        val name: String,
-        val email: String,
-        val countryCode: String,
-        val phone: String,
-        var image: String,
-        val isVerified: Boolean
+        val uid: String = "",
+        val name: String = "",
+        val email: String = "",
+        val countryCode: String = "",
+        val phone: String = "",
+        var image: String = "",
+        val isVerified: Boolean = false
     )
 
     data class Group(
@@ -31,8 +31,8 @@ object DataModel{
     )
 
     data class  Subjects(
-        val subjectId: String,
-        val name: String
+        val subjectId: String = "",
+        val name: String = ""
     )
 
     data class Students(
@@ -53,22 +53,22 @@ object DataModel{
     )
 
     data class Test(
-        val testId: String,
-        val creatorId: String,
-        val assignedTo: List<TestAssignedTo>,
-        var questions: List<Question>
+        val testId: String = "",
+        val creatorId: String = "",
+        val assignedTo: List<TestAssignedTo> = emptyList(),
+        var questions: List<Question> = emptyList()
     )
 
     data class Question(
-        var questionId: String,
-        var text: String,
-        var options: List<String>,
-        var correctOption: String,
-        var marks: Int
+        var questionId: String = "",
+        var text: String = "",
+        var options: List<String> = emptyList(),
+        var correctOption: String = "",
+        var marks: Int = 0
     )
 
     data class TestAssignedTo(
-        val studentId: String,
-        val hasAttempted: Boolean
+        val studentId: String = "",
+        val hasAttempted: Boolean = false
     )
 }
