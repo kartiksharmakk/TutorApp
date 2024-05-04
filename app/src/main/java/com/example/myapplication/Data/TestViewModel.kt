@@ -15,6 +15,7 @@ TestViewModel(var testRepository: TestRepository): ViewModel() {
     private val _allotedTo = MutableLiveData<MutableList<DataModel.TestAssignedTo>>()
     val allotedTo: LiveData<MutableList<DataModel.TestAssignedTo>> = _allotedTo
 
+
     fun addQuestion(question: DataModel.Question){
         val currentQuestions = _questions.value ?: mutableListOf()
         currentQuestions.add(question)
@@ -23,7 +24,8 @@ TestViewModel(var testRepository: TestRepository): ViewModel() {
     fun addQuestionToTest(testId: String, question: DataModel.Question){
         testRepository.addQuestionToTest(testId, question)
     }
-    fun saveTestAndQuestions(testId: String,questionsList:ArrayList<DataModel.Question>,uid: String?){
+
+    fun saveTestAndQuestions(testId: String,questionsList:ArrayList<DataModel.Question>,uid: String?,studentIdsList: ArrayList<String>){
         //val testId = testRepository.generateTestId()
         /*
         val questionsWithIds = _questions.value?.map{question ->
@@ -31,8 +33,9 @@ TestViewModel(var testRepository: TestRepository): ViewModel() {
         }?: emptyList()
 
          */
-        testRepository.saveTestAndQuestions(testId, questionsList,uid)
+        testRepository.saveTestAndQuestions(testId, questionsList,uid,studentIdsList)
     }
+
 
     fun addEmptyQuestion(){
         val newQuestion = DataModel.Question("","" ,emptyList(),"",0)

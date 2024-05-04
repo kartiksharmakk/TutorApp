@@ -13,8 +13,9 @@ import com.example.myapplication.databinding.CustomSelectStudentBinding
 import com.facebook.shimmer.Shimmer
 import com.google.firebase.storage.FirebaseStorage
 
-class AdapterStudentTest(var context: Context, var list: List<DataModel.Students>, val viewModel: TestViewModel): RecyclerView.Adapter<AdapterStudentTest.TestViewHolder>() {
-    val selectedStudentIds = mutableListOf<String>()
+class AdapterStudentTest(var context: Context, var list: List<DataModel.Students>, val viewModel: TestViewModel, onClickStudentListener :AdapterStudentTest.onClickStudentListener ): RecyclerView.Adapter<AdapterStudentTest.TestViewHolder>() {
+    val selectedStudentIds = ArrayList<String>()
+    val clickStudentListener = onClickStudentListener
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
@@ -25,7 +26,7 @@ class AdapterStudentTest(var context: Context, var list: List<DataModel.Students
 
     override fun onBindViewHolder(holder: AdapterStudentTest.TestViewHolder, position: Int) {
         val student = list[position]
-        holder.bind(context, student, selectedStudentIds, viewModel)
+        holder.bind(context, student, selectedStudentIds, viewModel, clickStudentListener)
     }
 
     override fun getItemCount(): Int {
@@ -33,7 +34,13 @@ class AdapterStudentTest(var context: Context, var list: List<DataModel.Students
     }
 
     class TestViewHolder(val binding: CustomSelectStudentBinding, val adapter: AdapterStudentTest): RecyclerView.ViewHolder(binding.root){
-        fun bind(context: Context, student: DataModel.Students, selectedStudentIds: MutableList<String>, viewModel: TestViewModel){
+        fun bind(
+            context: Context,
+            student: DataModel.Students,
+            selectedStudentIds: ArrayList<String>,
+            viewModel: TestViewModel,
+            clickStudentListener: AdapterStudentTest.onClickStudentListener
+        ){
             binding.apply {
                 val shimmer = Shimmer.AlphaHighlightBuilder().setDuration(1000).setBaseAlpha(0.7f)
                     .setHighlightAlpha(0.6f).setDirection(Shimmer.Direction.LEFT_TO_RIGHT).setAutoStart(true).build()
@@ -67,13 +74,17 @@ class AdapterStudentTest(var context: Context, var list: List<DataModel.Students
                     }else{
                         selectedStudentIds.add(student.studentId)
                         imgRadioButton.visibility = View.VISIBLE
-                        viewModel.addSelectedStudent(st)
+                        //viewModel.addSelectedStudent(st)
                     }
+                    clickStudentListener.onPassArray(selectedStudentIds)
                     adapter.notifyItemChanged(adapterPosition)
                     isSelected = !isSelected
                 }
             }
 
         }
+    }
+    interface onClickStudentListener{
+        fun onPassArray(passedArray: ArrayList<String>)
     }
 }

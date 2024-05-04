@@ -27,6 +27,8 @@ import com.google.firebase.Firebase
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.database
+import com.google.gson.Gson
+import org.greenrobot.eventbus.EventBus
 
 class CreateTestFragment : Fragment(),  QuestionAdapter.onclickListner {
     lateinit var binding: FragmentCreateTestBinding
@@ -62,7 +64,12 @@ class CreateTestFragment : Fragment(),  QuestionAdapter.onclickListner {
             findNavController().popBackStack()
         }
         binding.txtAssignTest.setOnClickListener {
-            findNavController().navigate(R.id.allotTest)
+            //viewModel.saveQuestionList(questionsList)
+            val gson = Gson()
+            val json = gson.toJson(questionsList)
+            var bundle = Bundle()
+            bundle.putString("questions_list",json)
+            findNavController().navigate(R.id.allotTest,bundle)
         }
         /*binding.imgSaveCreateTest.setOnClickListener {
            showPopUp()
@@ -87,20 +94,20 @@ class CreateTestFragment : Fragment(),  QuestionAdapter.onclickListner {
         val alertDialog = AlertDialog.Builder(requireContext()).setView(view)
             .setCancelable(false).create()
 
+        /*
         btnCreate.setOnClickListener {
             testId = testRepository.generateTestId()
             viewModel.saveTestAndQuestions(testId,questionsList,uid)
             alertDialog.dismiss()
         }
+
+         */
         btnCancel.setOnClickListener {
             alertDialog.dismiss()
         }
         alertDialog.show()
     }
 
-    override fun onQuestionInteraction(question: DataModel.Question, position: Int) {
-        //viewModel.addQuestionToTest(testId, question)
-    }
 
     override fun onSaveClicked(
         position: Int,

@@ -47,9 +47,6 @@ class QuestionAdapter(
     }
 
     override fun onBindViewHolder(holder: QuestionViewHolder, position: Int) {
-        holder.itemView.setOnClickListener {
-            clickListner.onQuestionInteraction(questions[position],position)
-        }
 
         fun inputValidation(): Boolean{
             var op = true
@@ -186,14 +183,10 @@ class QuestionAdapter(
         }
 
 
-        holder.itemView.setOnClickListener {
-            clickListner.onQuestionInteraction(question, position)
-        }
 
     }
 
     interface onclickListner {
-        fun onQuestionInteraction(question: DataModel.Question, position: Int)
         fun onSaveClicked(position: Int, question: String, option1: String, option2: String, option3: String, option4: String, marks: String, answer: String)
     }
 }

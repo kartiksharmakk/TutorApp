@@ -24,8 +24,9 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.database
+import org.greenrobot.eventbus.EventBus
 
-class AllotTestToStudentsFragment : Fragment() {
+class AllotTestToStudentsFragment : Fragment() , AdapterStudentTest.onClickStudentListener{
     lateinit var binding: FragmentAllotTestToStudentsBinding
     lateinit var auth: FirebaseAuth
     var firebaseDatabase = Firebase.database
@@ -34,6 +35,7 @@ class AllotTestToStudentsFragment : Fragment() {
     val testRepository = TestRepository(firebaseDatabase)
     val viewModelFactory = TestViewModelFactory(testRepository)
     val viewModel: TestViewModel by viewModels { viewModelFactory }
+    var studentsList = ArrayList<String>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,7 +55,7 @@ class AllotTestToStudentsFragment : Fragment() {
     }
 
     fun showRecyclerView(){
-        adapter = AdapterStudentTest(requireContext(), ArrayList(), viewModel)
+        adapter = AdapterStudentTest(requireContext(), ArrayList(), viewModel ,this)
         binding.rvAllotToStudents.apply {
             layoutManager = LinearLayoutManager(context)
             adapter = this@AllotTestToStudentsFragment.adapter
@@ -80,4 +82,10 @@ class AllotTestToStudentsFragment : Fragment() {
 
         })
     }
+
+    override fun onPassArray(passedArray: ArrayList<String>) {
+        EventBus.getDefault().post(passedArray)
+        //viewModel.saveStudentsIdsList(mostRecentStudentidList)
+    }
+
 }
