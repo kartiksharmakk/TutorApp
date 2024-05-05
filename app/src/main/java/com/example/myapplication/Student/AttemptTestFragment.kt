@@ -11,6 +11,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.myapplication.Adapter.AttemptTestAdapter
 import com.example.myapplication.Data.DataModel
+import com.example.myapplication.Data.Prefs
 import com.example.myapplication.R
 import com.example.myapplication.databinding.FragmentAttemptTestBinding
 import com.google.firebase.Firebase
@@ -37,6 +38,11 @@ class AttemptTestFragment : Fragment() {
             rvAttemptTest.apply {
                 layoutManager = LinearLayoutManager(requireContext())
                 adapter = this@AttemptTestFragment.adapter
+            }
+            binding.imgSubmitTest.setOnClickListener {
+                val uid = Prefs.getUID(requireContext())!!
+                val test = createAttemptTest()
+                saveAttemptedTestToDatabase(uid, test)
             }
         }
         fetchQuestions(testId)
@@ -67,4 +73,79 @@ class AttemptTestFragment : Fragment() {
 
         })
     }
+
+    private fun createAttemptTest(): DataModel.Test{
+        val testId = AttemptTestFragmentArgs.fromBundle(requireArguments()).testId
+        val testName = binding.txtTestNameSt.text.toString()
+        val attemptedQuestions = mutableListOf<DataModel.Question>()
+        for(question in questionsList){
+            val attemptedQuestion = DataModel.Question(question.questionId,
+                question.text,
+                question.options,
+                question.correctOption,
+                question.marks,
+                question.selectedOption)
+            attemptedQuestions.add(attemptedQuestion)
+        }
+        return DataModel.Test(
+            testId,
+            testName,
+            questions = attemptedQuestions
+        )
+    }
+    private fun saveAttemptedTestToDatabase(studentId: String, test: DataModel.Test){
+        val database = Firebase.database
+        val studentRef = database.getReference("Student")
+        studentRef.orderByChild("uid").equalTo(studentId)
+            .addListenerForSingleValueEvent(object: ValueEventListener{
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    if(snapshot.exists()){
+                        for(studentSnapshot in snapshot.children){
+                            val studentKey = studentSnapshot.key
+                            studentKey?.let{key->
+                                val attemptedTestsRef = studentRef.child(key).child("attemptedTests").push()
+                                attemptedTestsRef.setValue(test).addOnSuccessListener {
+                                    updateStatusAndMarks(studentId,test)
+                                }.addOnFailureListener { exception->
+                                    Log.e("AttemptTestFragment", "Error saving attempted test: ${exception.message}")
+                                }
+                            }
+                        }
+                    }else{
+                        Log.e("AttemptTestFragment", "No student found with UID: $studentId")
+                    }
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    Log.e("AttemptTestFragment", "Error querying student data: ${error.message}")
+                }
+            })
+    }
+
+    private fun updateStatusAndMarks(studentId: String,test: DataModel.Test){
+        val database = Firebase.database
+        val testId = test.testId
+        val testRef = database.getReference("tests").child(testId)
+        val updates = mapOf<String, Any>(
+            "assignedTo/$studentId/hasAttempted" to true,
+            "assignedTo/$studentId/marks" to calculateTotalMarks(test)
+        )
+        testRef.updateChildren(updates).addOnSuccessListener {
+            Log.d("AttemptTestFragment", "Test status and marks updated successfully for student $studentId")
+        }.addOnFailureListener { error ->
+            Log.e("AttemptTestFragment", "Error updating test status and marks for student $studentId: ${error.message}")
+        }
+    }
+
+    private fun calculateTotalMarks(test: DataModel.Test): Int {
+        // Iterate through the attempted questions and sum up the marks
+        var totalMarks = 0
+        for (question in test.questions) {
+            if (question.selectedOption == question.correctOption) {
+                totalMarks += question.marks
+            }
+        }
+        return totalMarks
+    }
+
 }

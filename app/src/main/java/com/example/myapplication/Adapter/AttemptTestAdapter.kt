@@ -38,7 +38,32 @@ class AttemptTestAdapter(val context: Context, val questions: List<DataModel.Que
                 txtOption3.text = question.options[2]
                 txtOption4.text = question.options[3]
 
+                rbOption1.setOnClickListener {
+                    question.selectedOption = question.options[0]
+                    rbOption2.isChecked = false
+                    rbOption3.isChecked = false
+                    rbOption4.isChecked = false
+                }
+                rbOption2.setOnClickListener {
+                    question.selectedOption = question.options[1]
+                    rbOption1.isChecked = false
+                    rbOption3.isChecked = false
+                    rbOption4.isChecked = false
+                }
+                rbOption3.setOnClickListener {
+                    question.selectedOption = question.options[2]
+                    rbOption1.isChecked = false
+                    rbOption2.isChecked = false
+                    rbOption4.isChecked = false
+                }
+                rbOption4.setOnClickListener {
+                    question.selectedOption = question.options[3]
+                    rbOption1.isChecked = false
+                    rbOption2.isChecked = false
+                    rbOption3.isChecked = false
+                }
             }
         }
     }
+
 }

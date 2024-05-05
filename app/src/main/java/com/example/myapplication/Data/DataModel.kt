@@ -65,7 +65,8 @@ object DataModel{
         var text: String = "",
         var options: List<String> = emptyList(),
         var correctOption: String = "",
-        var marks: Int = 0
+        var marks: Int = 0,
+        var selectedOption: String = ""
     )
 
     data class TestAssignedTo(
@@ -73,4 +74,5 @@ object DataModel{
         val hasAttempted: Boolean = false,
         val marks: Int = 0
     )
+
 }
