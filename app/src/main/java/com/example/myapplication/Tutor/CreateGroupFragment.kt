@@ -15,6 +15,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
@@ -25,12 +26,17 @@ import com.example.myapplication.Data.Prefs
 import com.example.myapplication.Data.TutorViewModel
 import com.example.myapplication.Functions.CommonFunctions
 import com.example.myapplication.Functions.CommonFunctions.getToastShort
+import com.example.myapplication.Functions.CommonFunctions.sendNotificationToDevice
 import com.example.myapplication.R
 import com.example.myapplication.databinding.FragmentCreateGroupBinding
 import com.google.firebase.Firebase
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.database
+import com.google.firebase.database.getValue
 import com.google.firebase.storage.FirebaseStorage
 import com.yalantis.ucrop.UCrop
 import java.io.File
@@ -277,6 +283,8 @@ class CreateGroupFragment : Fragment() {
                 uploadImageToFirebaseStorage(groupId,displayImageUrl, ImageType.DISPLAY)
                 uploadImageToFirebaseStorage(groupId,coverImageUrl, ImageType.COVER)
                 getToastShort(requireContext(),"Group created")
+                val tokens = retrieveGroupMembersDeviceTokens(students)
+                sendNotificationToAddedStudents(name,tokens)
             }.addOnFailureListener {
                 Log.e("CreateGroupFragment", "Error creating group")
             }
@@ -298,7 +306,50 @@ class CreateGroupFragment : Fragment() {
             binding.edtCreateGroupSubject.error = "Required field"
             isInvalid = true
         }
+        if (displayImageUrl == null) {
+            Toast.makeText(requireContext(),"Display image is required", Toast.LENGTH_SHORT).show()
+            isInvalid = true
+        }
+        if (coverImageUrl == null) {
+            Toast.makeText(requireContext(),"Cover image is required", Toast.LENGTH_SHORT).show()
+            isInvalid = true
+        }
         return isInvalid
+    }
+
+    fun retrieveGroupMembersDeviceTokens(studentIds: List<String>): List<String>{
+        val deviceTokens = mutableListOf<String>()
+        val userReference = firebaseDatabase.getReference("User Details")
+
+        val deviceTokensQuery = userReference.orderByChild("uid")
+        deviceTokensQuery.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                for (id in studentIds) {
+                    val userDataSnapshot = snapshot.children.find { it.child("uid").getValue(String::class.java) == id }
+                    val deviceToken = userDataSnapshot?.child("deviceToken")?.getValue(String::class.java)
+                    deviceToken?.let {
+                        deviceTokens.add(it)
+                    }
+                }
+                if (deviceTokens.isEmpty()) {
+                    Log.e("CreateGroupFragment1", "No device tokens found for the provided student IDs")
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Log.e("CreateGroupFragment1", "Database query cancelled: ${error.message}")
+            }
+        })
+
+        return deviceTokens
+    }
+    fun sendNotificationToAddedStudents(groupName: String, addedStudentTokens: List<String>){
+        val title = "New Group Created"
+        val message = "You have been added to the group: $groupName"
+        for(token in addedStudentTokens){
+            sendNotificationToDevice("e2FH7fV6Qw6zG4cYxQNcxT:APA91bHL7FKwI0fCP7wSOSDUavVC_UjYksqSgfYr7bOJTJKeP-RQQC65eoZU9dw0KjkWpCqRcfd7CqgrjQumCq6yvQwAQhn0jJybCI6h9h95GnMpfFxhJNkl2l2qY5K9Y7yetGHsayy_", title, message)
+        }
+        Log.d("CreateGroup","sending notification")
     }
 
     fun Observer(){

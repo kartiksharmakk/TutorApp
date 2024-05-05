@@ -54,7 +54,7 @@ class StudentHomeFragment : Fragment() {
         }
 
         fetchGroups()
-        //fetchTests()
+        fetchTests()
         return binding.root
     }
 

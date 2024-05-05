@@ -69,6 +69,7 @@ object DataModel{
 
     data class TestAssignedTo(
         val studentId: String = "",
-        val hasAttempted: Boolean = false
+        val hasAttempted: Boolean = false,
+        val marks: Int = 0
     )
 }

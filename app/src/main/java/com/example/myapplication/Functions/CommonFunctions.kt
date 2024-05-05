@@ -10,6 +10,7 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
+import android.util.Log
 import android.view.ViewTreeObserver
 import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
@@ -22,6 +23,8 @@ import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
+import com.google.firebase.messaging.FirebaseMessaging
+import com.google.firebase.messaging.RemoteMessage
 import java.util.Calendar
 
 object CommonFunctions {
@@ -171,6 +174,18 @@ object CommonFunctions {
                 }
                 .setCancelable(false)
                 .show()
+        }
+    }
+
+    fun sendNotificationToDevice(deviceToken: String, title: String, message: String){
+        try {
+            val notification = RemoteMessage.Builder(deviceToken).setMessageId(System.currentTimeMillis().toString())
+                .addData("title",title)
+                .addData("message",message)
+                .build()
+            FirebaseMessaging.getInstance().send(notification)
+        }catch (e: Exception){
+            Log.e("SendNotificationToDevice","Error: ${e.message}")
         }
     }
 }

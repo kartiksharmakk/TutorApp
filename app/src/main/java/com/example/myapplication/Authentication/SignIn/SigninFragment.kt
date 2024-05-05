@@ -33,6 +33,7 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.database
+import com.google.firebase.messaging.FirebaseMessaging
 import java.util.Locale.IsoCountryCode
 
 class SigninFragment : Fragment() {
@@ -115,6 +116,7 @@ class SigninFragment : Fragment() {
             try{
                 if (it.isSuccessful){
                     if(auth.currentUser!!.isEmailVerified){
+                        generateDeviceToken()
                         updateVerificationInDatabase(true)
                         Prefs.getLoggedIn(requireContext(),true)
                         val intentTutor = Intent(requireContext(), TutorHome::class.java)
@@ -238,6 +240,19 @@ class SigninFragment : Fragment() {
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         CommonFunctions.onRequestPermissionsResult(requireActivity(), requestCode, permissions, grantResults)
+    }
+
+    fun generateDeviceToken(){
+        FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
+            if (task.isSuccessful){
+                val email = Prefs.getUSerEmailEncoded(requireContext())!!
+                val deviceToken = task.result
+                databaseReference.child(email).child("deviceToken").setValue(deviceToken)
+                Log.d("SignIn","Device Token: $deviceToken")
+            }else{
+                Log.d("SignIn","Device Token error")
+            }
+        }
     }
 
 

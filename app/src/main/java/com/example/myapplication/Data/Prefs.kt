@@ -16,6 +16,7 @@ object Prefs {
     private const val USER_TYPE = "user_type"
     private const val KEY_LOGGED_IN = "loggedIn"
     private const val VERIFICATION_ID_KEY = "verificationId"
+    private const val DEVICE_TOKEN = "device_token"
 
 
     var username: String
@@ -76,6 +77,13 @@ object Prefs {
     }
     fun getUserType(context: Context): String?{
         return getPrefs(context).getString(USER_TYPE, null)
+    }
+
+    fun saveDeviceToken(context: Context, token: String){
+        getPrefs(context).edit().putString(DEVICE_TOKEN, token).apply()
+    }
+    fun getDeviceToken(context: Context): String?{
+        return getPrefs(context).getString(DEVICE_TOKEN, null)
     }
 
     fun clearPrefs() {
