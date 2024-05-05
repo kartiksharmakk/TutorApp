@@ -41,8 +41,9 @@ class AttemptTestFragment : Fragment() {
             }
             binding.imgSubmitTest.setOnClickListener {
                 val uid = Prefs.getUID(requireContext())!!
-                val test = createAttemptTest()
-                saveAttemptedTestToDatabase(uid, test)
+                val attemptedTest = createAttemptTest()
+                saveAttemptedTestToDatabase(uid, attemptedTest)
+                updateStatusAndMarks(uid,attemptedTest)
             }
         }
         fetchQuestions(testId)
@@ -96,7 +97,7 @@ class AttemptTestFragment : Fragment() {
     private fun saveAttemptedTestToDatabase(studentId: String, test: DataModel.Test){
         val database = Firebase.database
         val studentRef = database.getReference("Student")
-        studentRef.orderByChild("uid").equalTo(studentId)
+        studentRef.orderByChild("studentId").equalTo(studentId)
             .addListenerForSingleValueEvent(object: ValueEventListener{
                 override fun onDataChange(snapshot: DataSnapshot) {
                     if(snapshot.exists()){
@@ -105,7 +106,6 @@ class AttemptTestFragment : Fragment() {
                             studentKey?.let{key->
                                 val attemptedTestsRef = studentRef.child(key).child("attemptedTests").push()
                                 attemptedTestsRef.setValue(test).addOnSuccessListener {
-                                    updateStatusAndMarks(studentId,test)
                                 }.addOnFailureListener { exception->
                                     Log.e("AttemptTestFragment", "Error saving attempted test: ${exception.message}")
                                 }
@@ -126,15 +126,35 @@ class AttemptTestFragment : Fragment() {
         val database = Firebase.database
         val testId = test.testId
         val testRef = database.getReference("tests").child(testId)
-        val updates = mapOf<String, Any>(
-            "assignedTo/$studentId/hasAttempted" to true,
-            "assignedTo/$studentId/marks" to calculateTotalMarks(test)
-        )
-        testRef.updateChildren(updates).addOnSuccessListener {
-            Log.d("AttemptTestFragment", "Test status and marks updated successfully for student $studentId")
-        }.addOnFailureListener { error ->
-            Log.e("AttemptTestFragment", "Error updating test status and marks for student $studentId: ${error.message}")
-        }
+        testRef.child("assignedTo").addListenerForSingleValueEvent(object : ValueEventListener{
+            override fun onDataChange(snapshot: DataSnapshot) {
+                if (snapshot.exists()){
+                    for(assignedToSnapshot in snapshot.children){
+                        val assignedToStudentId = assignedToSnapshot.child("studentId").getValue()
+                        if(assignedToStudentId == studentId){
+                            assignedToSnapshot.ref.updateChildren(
+                                mapOf(
+                                    "hasAttempted" to true,
+                                    "marks" to calculateTotalMarks(test)
+                                )
+                            ).addOnSuccessListener {
+                                Log.d("AttemptTestFragment", "Test status and marks updated successfully for student $studentId")
+                            }.addOnFailureListener { error ->
+                                Log.e("AttemptTestFragment", "Error updating test status and marks for student $studentId: ${error.message}")
+                            }
+                            return
+                        }
+                    }
+                }else{
+                    Log.e("AttemptTestFragment", "No assignedTo data found for test $testId")
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Log.e("AttemptTestFragment", "Error querying assignedTo data: ${error.message}")
+            }
+
+        })
     }
 
     private fun calculateTotalMarks(test: DataModel.Test): Int {
