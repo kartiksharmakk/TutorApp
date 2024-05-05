@@ -121,6 +121,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
+                tools:listitem="@layout/custom_question_create_layout"
                 app:spanCount="2" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>

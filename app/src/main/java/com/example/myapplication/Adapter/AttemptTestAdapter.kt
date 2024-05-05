@@ -1,0 +1,44 @@
+package com.example.myapplication.Adapter
+
+import android.content.Context
+import android.view.LayoutInflater
+import android.view.ViewGroup
+import androidx.recyclerview.widget.RecyclerView
+import com.example.myapplication.Data.DataModel
+import com.example.myapplication.databinding.CustomQuestionViewAdapterBinding
+
+class AttemptTestAdapter(val context: Context, val questions: List<DataModel.Question>): RecyclerView.Adapter<AttemptTestAdapter.QuestionViewHolder>() {
+    override fun onCreateViewHolder(
+        parent: ViewGroup,
+        viewType: Int
+    ): AttemptTestAdapter.QuestionViewHolder {
+        val binding = CustomQuestionViewAdapterBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return QuestionViewHolder(binding)
+    }
+
+    override fun onBindViewHolder(holder: AttemptTestAdapter.QuestionViewHolder, position: Int) {
+        holder.bind(questions[position])
+    }
+
+    override fun getItemCount(): Int {
+        return questions.size
+    }
+
+    class QuestionViewHolder(val binding: CustomQuestionViewAdapterBinding): RecyclerView.ViewHolder(binding.root){
+        fun bind(question: DataModel.Question){
+            binding.apply {
+                txtQuestion.text = question.text
+                txtMarksSt.text = if(question.marks == 1){
+                    "(${question.marks} Mark)"
+                }else{
+                    "(${question.marks} Marks)"
+                }
+                txtOption1.text = question.options[0]
+                txtOption2.text = question.options[1]
+                txtOption3.text = question.options[2]
+                txtOption4.text = question.options[3]
+
+            }
+        }
+    }
+}

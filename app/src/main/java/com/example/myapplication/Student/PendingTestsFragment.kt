@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.navigation.fragment.findNavController
 import com.example.myapplication.Adapter.AdapterPendingTests
 import com.example.myapplication.Data.DataModel
 import com.example.myapplication.Data.Prefs
@@ -37,7 +38,8 @@ class PendingTestsFragment : Fragment() {
         testReference = firebaseDatabase.getReference("tests")
         pendingTests = mutableListOf()
         pendingAdapter = AdapterPendingTests(requireContext(), pendingTests){tests->
-            //Pending
+            val action = PendingTestsFragmentDirections.actionPendingTestFragmentToAttemptTestFragment(tests.testId)
+            findNavController().navigate(action)
         }
         binding.rvPendingTests.adapter = pendingAdapter
         retrieveTests()

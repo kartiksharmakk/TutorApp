@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.navigation.fragment.findNavController
 import com.example.myapplication.Adapter.StudentGroupAdapter
 import com.example.myapplication.Adapter.StudentTestAdapter
 import com.example.myapplication.Data.DataModel
@@ -44,7 +45,8 @@ class StudentHomeFragment : Fragment() {
             //Pending
         }
         testAdapter = StudentTestAdapter(requireContext(), testList){test ->
-            //Pending
+            val action = StudentHomeFragmentDirections.actionstudentHomeFragmentToAttemptTestFragment(test.testId)
+            findNavController().navigate(action)
         }
 
         binding.apply {
