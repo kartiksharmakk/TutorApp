@@ -24,8 +24,9 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.database
+import org.greenrobot.eventbus.EventBus
 
-class AllotTestToGroupFragment : Fragment() {
+class AllotTestToGroupFragment : Fragment() , AdapterGroupTest.OnClickGroupClickListener{
     lateinit var binding: FragmentAllotTestToGroupBinding
     lateinit var auth: FirebaseAuth
     var firebaseDatabase = Firebase.database
@@ -33,6 +34,7 @@ class AllotTestToGroupFragment : Fragment() {
     private lateinit var adapter: AdapterGroupTest
     val testRepository = TestRepository(firebaseDatabase)
     val viewModelFactory = TestViewModelFactory(testRepository)
+    val groups = ArrayList<DataModel.Group>()
     val viewModel: TestViewModel by viewModels { viewModelFactory }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -52,7 +54,7 @@ class AllotTestToGroupFragment : Fragment() {
     }
 
     fun showRecyclerView(){
-        adapter = AdapterGroupTest(requireContext(), ArrayList(), viewModel)
+        adapter = AdapterGroupTest(requireContext(), ArrayList(), viewModel,this)
         binding.rvAllotToGroup.apply {
             layoutManager = LinearLayoutManager(context)
             adapter = this@AllotTestToGroupFragment.adapter
@@ -62,7 +64,6 @@ class AllotTestToGroupFragment : Fragment() {
     fun loadStudents(){
         databaseReference.addValueEventListener(object: ValueEventListener{
             override fun onDataChange(snapshot: DataSnapshot) {
-                val groups = ArrayList<DataModel.Group>()
                 for(groupSnapshot in snapshot.children){
                     val group = groupSnapshot.getValue(DataModel.Group::class.java)
                     group?.let {
@@ -78,6 +79,24 @@ class AllotTestToGroupFragment : Fragment() {
             }
 
         })
+    }
+
+
+    override fun onPassArray(passedArray: ArrayList<String>) {
+        val selectedStudentIds = ArrayList<String>()
+
+        for (groupId in passedArray) {
+            val matchingGroup = groups.find { it.groupId == groupId }
+
+            matchingGroup?.let { group ->
+                selectedStudentIds.addAll(group.students)
+            }
+        }
+
+        val uniqueStudentIds = ArrayList(selectedStudentIds.toSet().toList())
+
+        EventBus.getDefault().post(uniqueStudentIds)
+
     }
 
 }
