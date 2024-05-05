@@ -30,16 +30,17 @@
         app:layout_constraintStart_toEndOf="@+id/imgBackCreateTest"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/txtAssignTest"
+    <Button
+        android:id="@+id/btnAssignTest"
         android:layout_width="wrap_content"
-        android:layout_height="40dp"
+        android:layout_height="wrap_content"
         android:textStyle="bold"
         android:textSize="18dp"
         android:text="Assign Test"
+        android:layout_marginEnd="8dp"
         android:textColor="@color/white"
         android:padding="8dp"
-        android:background="@color/black"
+        android:backgroundTint="@color/black"
         android:fontFamily="sans-serif-black"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"/>
@@ -68,6 +69,46 @@
             android:layout_height="match_parent"
             android:paddingBottom="35dp"
             >
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toTopOf="@id/cardTestName"/>
+            <TextView
+                android:id="@+id/txtHint"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Test Name"
+                android:fontFamily="sans-serif-black"
+                android:layout_marginBottom="8dp"
+                android:layout_marginStart="24dp"
+                android:visibility="gone"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintBottom_toTopOf="@id/cardTestName"/>
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cardTestName"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:elevation="8dp"
+                app:cardCornerRadius="8dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginBottom="16dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toTopOf="@id/rvTest">
+                <EditText
+                    android:id="@+id/edtTestName"
+                    android:layout_width="match_parent"
+                    android:layout_height="45dp"
+                    android:padding="8dp"
+                    android:hint="Test Name"
+                    android:background="@android:color/transparent"
+                    android:fontFamily="sans-serif-black"
+                    />
+            </androidx.cardview.widget.CardView>
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rvTest"

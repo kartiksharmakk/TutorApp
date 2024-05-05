@@ -2,6 +2,7 @@ package com.example.myapplication.Tutor
 
 import android.app.AlertDialog
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -44,6 +45,7 @@ class AllotTestFragment : Fragment() {
     var finalStudentIdsListArray = ArrayList<String>()
     var finalQuestionsListArray = ArrayList<DataModel.Question>()
     var questionsListJSON: String = ""
+    var testName = ""
 
 
     override fun onCreateView(
@@ -52,9 +54,13 @@ class AllotTestFragment : Fragment() {
     ): View? {
         binding = FragmentAllotTestBinding.inflate(inflater, container, false)
         tutorUid = Prefs.getUID(requireContext())
+        Log.d("TestName","TestName not observed : ${viewModel.testName.value}")
         //finalQuestionsListArray = navquestionlist.toList()
         if (arguments?.getInt("questions_list") != null) {
             questionsListJSON = arguments?.getString("questions_list")!!
+        }
+        if (arguments?.getString("testName") != null){
+            testName = arguments?.getString("testName")!!
         }
         val gson = Gson()
         val questionListType = object : TypeToken<ArrayList<DataModel.Question>>() {}.type
@@ -108,7 +114,7 @@ class AllotTestFragment : Fragment() {
 
         btnCreate.setOnClickListener {
             testId = testRepository.generateTestId()
-            viewModel.saveTestAndQuestions(testId,finalQuestionsListArray,tutorUid,finalStudentIdsListArray)
+            viewModel.saveTestAndQuestions(testId,testName,finalQuestionsListArray,tutorUid,finalStudentIdsListArray)
             alertDialog.dismiss()
         }
         btnCancel.setOnClickListener {

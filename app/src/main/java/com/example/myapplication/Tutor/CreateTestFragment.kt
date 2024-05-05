@@ -50,7 +50,6 @@ class CreateTestFragment : Fragment(),  QuestionAdapter.onclickListner {
         viewModel.testRepository = testRepository
 
         uid = Prefs.getUID(requireContext())
-        viewModel.initNewTest(uid!!)
         viewModel.addEmptyQuestion()
         adapter = QuestionAdapter(viewModel.questions.value?: mutableListOf(), this)
 
@@ -63,13 +62,19 @@ class CreateTestFragment : Fragment(),  QuestionAdapter.onclickListner {
         binding.imgBackCreateTest.setOnClickListener {
             findNavController().popBackStack()
         }
-        binding.txtAssignTest.setOnClickListener {
+        binding.btnAssignTest.setOnClickListener {
             //viewModel.saveQuestionList(questionsList)
-            val gson = Gson()
-            val json = gson.toJson(questionsList)
-            var bundle = Bundle()
-            bundle.putString("questions_list",json)
-            findNavController().navigate(R.id.allotTest,bundle)
+            if(binding.edtTestName.text.toString().trim().isNotEmpty()){
+                val gson = Gson()
+                val json = gson.toJson(questionsList)
+                var bundle = Bundle()
+                bundle.putString("questions_list",json)
+                bundle.putString("testName",binding.edtTestName.text.toString().trim())
+                viewModel.initNewTest(uid!!,binding.edtTestName.text.toString().trim())
+                findNavController().navigate(R.id.allotTest,bundle)
+            }else{
+                binding.edtTestName.error = "Required field"
+            }
         }
         /*binding.imgSaveCreateTest.setOnClickListener {
            showPopUp()

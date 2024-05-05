@@ -30,7 +30,7 @@ class TutorTestAdapter(val context: Context, val tests: List<DataModel.Test>, va
 
         fun bind(context: Context, test: DataModel.Test){
             binding.apply {
-                txtTestName.text = test.testId//Test name part pending
+                txtTestName.text = test.testName
                 root.setOnClickListener {
                     onItemClick.invoke(test)
                 }

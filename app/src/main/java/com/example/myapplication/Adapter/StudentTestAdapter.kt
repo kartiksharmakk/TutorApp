@@ -29,7 +29,7 @@ class StudentTestAdapter(val context: Context, val tests: List<DataModel.Test>, 
     class TestViewHolder(val binding: CustomTestCardBinding, val onItemClick: (DataModel.Test) -> Unit): RecyclerView.ViewHolder(binding.root), View.OnClickListener{
         fun bind(context: Context, test: DataModel.Test){
             binding.apply {
-                txtTestName.text = test.testId//Pending
+                txtTestName.text = test.testName
                 root.setOnClickListener {
                     onItemClick.invoke(test)
                 }

@@ -54,6 +54,7 @@ object DataModel{
 
     data class Test(
         val testId: String = "",
+        val testName: String = "",
         val creatorId: String = "",
         val assignedTo: List<TestAssignedTo> = emptyList(),
         var questions: List<Question> = emptyList()

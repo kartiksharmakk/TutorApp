@@ -1,11 +1,17 @@
 package com.example.myapplication.Data
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.launch
 
 class
 TestViewModel(var testRepository: TestRepository): ViewModel() {
+    private val _testName = MutableLiveData<String>()
+    val testName: LiveData<String> get()= _testName
+
     private val _test = MutableLiveData<DataModel.Test>()
     val test: LiveData<DataModel.Test> = _test
 
@@ -15,6 +21,12 @@ TestViewModel(var testRepository: TestRepository): ViewModel() {
     private val _allotedTo = MutableLiveData<MutableList<DataModel.TestAssignedTo>>()
     val allotedTo: LiveData<MutableList<DataModel.TestAssignedTo>> = _allotedTo
 
+    fun updateTestName(name: String){
+        viewModelScope.launch {
+            _testName.value = name
+            Log.d("TestName","TestName : ${_testName.value}")
+        }
+    }
 
     fun addQuestion(question: DataModel.Question){
         val currentQuestions = _questions.value ?: mutableListOf()
@@ -25,7 +37,7 @@ TestViewModel(var testRepository: TestRepository): ViewModel() {
         testRepository.addQuestionToTest(testId, question)
     }
 
-    fun saveTestAndQuestions(testId: String,questionsList:ArrayList<DataModel.Question>,uid: String?,studentIdsList: ArrayList<String>){
+    fun saveTestAndQuestions(testId: String,testName: String,questionsList:ArrayList<DataModel.Question>,uid: String?,studentIdsList: ArrayList<String>){
         //val testId = testRepository.generateTestId()
         /*
         val questionsWithIds = _questions.value?.map{question ->
@@ -33,7 +45,7 @@ TestViewModel(var testRepository: TestRepository): ViewModel() {
         }?: emptyList()
 
          */
-        testRepository.saveTestAndQuestions(testId, questionsList,uid,studentIdsList)
+        testRepository.saveTestAndQuestions(testId, testName,questionsList,uid,studentIdsList)
     }
 
 
@@ -43,8 +55,8 @@ TestViewModel(var testRepository: TestRepository): ViewModel() {
         currentQuestions.add(newQuestion)
         _questions.postValue(currentQuestions)
     }
-    fun initNewTest(creatorId: String){
-        val newTest = DataModel.Test("", creatorId, emptyList(), mutableListOf())
+    fun initNewTest(creatorId: String, testName: String){
+        val newTest = DataModel.Test("", testName,creatorId, emptyList(), mutableListOf())
         _test.value = newTest
     }
 
