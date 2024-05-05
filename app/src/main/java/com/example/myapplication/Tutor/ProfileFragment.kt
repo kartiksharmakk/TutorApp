@@ -29,6 +29,7 @@ import com.bumptech.glide.request.RequestOptions
 import com.example.myapplication.Authentication.AuthActivity
 import com.example.myapplication.Data.DataModel
 import com.example.myapplication.Data.Prefs
+import com.example.myapplication.Data.TutorStatsHelper
 import com.example.myapplication.Functions.CommonFunctions.getToastShort
 import com.example.myapplication.R
 import com.example.myapplication.databinding.FragmentProfileBinding
@@ -77,6 +78,12 @@ class ProfileFragment : Fragment() {
             imgEditImageProfile.setOnClickListener {
                 checkPermission()
             }
+            val tutorStatsHelper = TutorStatsHelper(requireContext()){counts ->
+                txtTestCount.text = counts.testCount.toString()
+                tctGroupCount.text = counts.groupCount.toString()
+                Log.d("ProfileFragment","TestCount: ${counts.testCount}\nGroupCount: ${counts.groupCount}")
+            }
+            tutorStatsHelper.getTutorStats()
             txtGenerateQR.setOnClickListener {
                 showQR(qrCodeBitmap!!)
             }
