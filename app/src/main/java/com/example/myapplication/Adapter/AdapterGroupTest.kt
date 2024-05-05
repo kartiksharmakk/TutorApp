@@ -13,8 +13,9 @@ import com.example.myapplication.databinding.CustomSelectGroupLayoutBinding
 import com.facebook.shimmer.Shimmer
 import com.google.firebase.storage.FirebaseStorage
 
-class AdapterGroupTest(var context: Context, var list: List<DataModel.Group>, var viewModel: TestViewModel): RecyclerView.Adapter<AdapterGroupTest.TestViewHolder>() {
-    val selectedGroupIds = mutableListOf<String>()
+class AdapterGroupTest(var context: Context, var list: List<DataModel.Group>, var viewModel: TestViewModel, onClickGroupListener: AdapterGroupTest.OnClickGroupClickListener): RecyclerView.Adapter<AdapterGroupTest.TestViewHolder>() {
+    val selectedGroupIds = ArrayList<String>()
+    val clickGroupListener = onClickGroupListener
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
@@ -25,7 +26,7 @@ class AdapterGroupTest(var context: Context, var list: List<DataModel.Group>, va
 
     override fun onBindViewHolder(holder: AdapterGroupTest.TestViewHolder, position: Int) {
         val group = list[position]
-        holder.bind(context, group, selectedGroupIds, viewModel)
+        holder.bind(context, group, selectedGroupIds, viewModel,clickGroupListener)
     }
 
     override fun getItemCount(): Int {
@@ -33,7 +34,7 @@ class AdapterGroupTest(var context: Context, var list: List<DataModel.Group>, va
     }
 
     class TestViewHolder(val binding: CustomSelectGroupLayoutBinding, val adapter: AdapterGroupTest): RecyclerView.ViewHolder(binding.root){
-        fun bind(context: Context, group: DataModel.Group, selectedGroupIds: MutableList<String>, viewModel: TestViewModel){
+        fun bind(context: Context, group: DataModel.Group, selectedGroupIds: ArrayList<String>, viewModel: TestViewModel, clickGroupListener: AdapterGroupTest.OnClickGroupClickListener){
             binding.apply {
                 val shimmer = Shimmer.AlphaHighlightBuilder().setDuration(1000).setBaseAlpha(0.7f)
                     .setHighlightAlpha(0.6f).setDirection(Shimmer.Direction.LEFT_TO_RIGHT).setAutoStart(true).build()
@@ -67,9 +68,14 @@ class AdapterGroupTest(var context: Context, var list: List<DataModel.Group>, va
                         // Remove selected group students from view model
                         viewModel.removeSelectedGroupStudents(group.groupId)
                     }
+                    clickGroupListener.onPassArray(selectedGroupIds)
                     adapter.notifyItemChanged(adapterPosition)
                 }
             }
         }
+    }
+
+    interface OnClickGroupClickListener{
+        fun onPassArray(passedArray: ArrayList<String>)
     }
 }
