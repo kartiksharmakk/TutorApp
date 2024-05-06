@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.example.myapplication.Adapter.GroupMembersAdapter
@@ -41,9 +42,12 @@ class GroupDetailsFragment : Fragment() {
                 if (snapshot.exists()){
                     val group = snapshot.getValue(DataModel.Group::class.java)!!
                     binding.apply {
+                        imgBackGroupDetails.setOnClickListener{
+                            findNavController().popBackStack()
+                        }
                         txtGroupNameView.text = group.groupName
                         txtGroupDescription.text = group.description
-                        txtGroupCreator.text = getTutorName(group.tutorId)
+                        getTutorName(group.tutorId)
                         Glide.with(requireContext()).load(group.displayImage).into(imgGroupDPView)
                         Glide.with(requireContext()).load(group.coverImage).into(imgGroupCoverImageView)
                         fetchStudents(group.students)
@@ -60,8 +64,7 @@ class GroupDetailsFragment : Fragment() {
         })
     }
 
-    fun getTutorName(tutorId: String): String{
-        var tutorName = ""
+    fun getTutorName(tutorId: String){
         firebaseDatabase = Firebase.database
         val tutorReference = firebaseDatabase.getReference("Tutor")
         tutorReference.orderByChild("uid").equalTo(tutorId)
@@ -70,7 +73,7 @@ class GroupDetailsFragment : Fragment() {
                     if (tutorSnapshot.exists()) {
                         for (tutorData in tutorSnapshot.children) {
                             val tutor = tutorData.getValue(DataModel.TeacherModel::class.java)
-                            tutorName = tutor?.name!!
+                            binding.txtGroupCreator.text = tutor?.name!!
                         }
                     }
                 }
@@ -78,7 +81,7 @@ class GroupDetailsFragment : Fragment() {
                 override fun onCancelled(error: DatabaseError) {
                 }
             })
-        return tutorName
+
     }
 
     fun fetchStudents(studentIds: List<String>){
