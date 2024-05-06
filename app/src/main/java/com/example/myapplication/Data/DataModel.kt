@@ -57,7 +57,8 @@ object DataModel{
         val testName: String = "",
         val creatorId: String = "",
         val assignedTo: List<TestAssignedTo> = emptyList(),
-        var questions: List<Question> = emptyList()
+        var questions: List<Question> = emptyList(),
+        var totalMarks: Int = 0
     )
 
     data class Question(

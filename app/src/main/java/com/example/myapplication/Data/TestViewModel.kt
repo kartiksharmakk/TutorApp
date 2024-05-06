@@ -37,7 +37,7 @@ TestViewModel(var testRepository: TestRepository): ViewModel() {
         testRepository.addQuestionToTest(testId, question)
     }
 
-    fun saveTestAndQuestions(testId: String,testName: String,questionsList:ArrayList<DataModel.Question>,uid: String?,studentIdsList: ArrayList<String>){
+    fun saveTestAndQuestions(testId: String,testName: String,questionsList:ArrayList<DataModel.Question>,uid: String?,studentIdsList: ArrayList<String>, totalMarks: Int){
         //val testId = testRepository.generateTestId()
         /*
         val questionsWithIds = _questions.value?.map{question ->
@@ -45,7 +45,7 @@ TestViewModel(var testRepository: TestRepository): ViewModel() {
         }?: emptyList()
 
          */
-        testRepository.saveTestAndQuestions(testId, testName,questionsList,uid,studentIdsList)
+        testRepository.saveTestAndQuestions(testId, testName,questionsList,uid,studentIdsList, totalMarks)
     }
 
 

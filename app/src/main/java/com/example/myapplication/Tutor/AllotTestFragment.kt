@@ -114,8 +114,13 @@ class AllotTestFragment : Fragment() {
 
         btnCreate.setOnClickListener {
             testId = testRepository.generateTestId()
-            viewModel.saveTestAndQuestions(testId,testName,finalQuestionsListArray,tutorUid,finalStudentIdsListArray)
+            var totalMarks = 0
+            for(question in finalQuestionsListArray){
+                totalMarks += question.marks
+            }
+            viewModel.saveTestAndQuestions(testId,testName,finalQuestionsListArray,tutorUid,finalStudentIdsListArray, totalMarks)
             alertDialog.dismiss()
+            findNavController().popBackStack()
         }
         btnCancel.setOnClickListener {
             alertDialog.dismiss()

@@ -31,7 +31,7 @@ class TestRepository(val database: FirebaseDatabase) {
             .joinToString("")
     }
 
-    fun saveTestAndQuestions(testId: String, testName: String,questions: ArrayList<DataModel.Question>,uid:String?,studentsList: ArrayList<String>){
+    fun saveTestAndQuestions(testId: String, testName: String,questions: ArrayList<DataModel.Question>,uid:String?,studentsList: ArrayList<String>, totalMarks: Int){
         //testRef.child(testId).setValue(DataModel.Test(testId,"", emptyList(), emptyList()))//Add data
 
         for( i in questions){
@@ -48,7 +48,7 @@ class TestRepository(val database: FirebaseDatabase) {
 
         testRef.child(testId).setValue(uid?.let {
             DataModel.Test(testId,testName,
-                it, testAssignedToStudentsList , questions)
+                it, testAssignedToStudentsList , questions, totalMarks)
         })
 
         /*

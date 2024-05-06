@@ -10,4 +10,5 @@
     <color name="text_color">#333333</color>
     <color name="primary_accent">#66B2FF</color>
     <color name="secondary_accent">#DFDABE</color>
+    <color name="yellow">#FDD835</color>
 </resources>

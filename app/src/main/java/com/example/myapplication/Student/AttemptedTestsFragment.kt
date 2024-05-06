@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.navigation.fragment.findNavController
 import com.example.myapplication.Adapter.AdapterAttemptedTests
 import com.example.myapplication.Data.DataModel
 import com.example.myapplication.Data.Prefs
@@ -33,7 +34,8 @@ class AttemptedTestsFragment : Fragment() {
         testReference = firebaseDatabase.getReference("tests")
         pendingTests = mutableListOf()
         attemptedAdapter = AdapterAttemptedTests(requireContext(), pendingTests){tests->
-            //Pending
+            val action = AttemptTestFragmentDirections.actionAttemptedTestsFragmentToAttemptedTestFragment(tests.testId)
+            findNavController().navigate(action)
         }
         binding.rvAttemptedTests.adapter = attemptedAdapter
         retrieveTests()

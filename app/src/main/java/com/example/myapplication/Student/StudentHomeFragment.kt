@@ -42,10 +42,17 @@ class StudentHomeFragment : Fragment() {
         groupList = mutableListOf()
         testList = mutableListOf()
         groupAdapter = StudentGroupAdapter(requireContext(), groupList){group ->
-            //Pending
+            val action = StudentHomeFragmentDirections.actionStudentHomeFragmentToGroupDetailsFragment(group.groupId)
+            findNavController().navigate(action)
         }
         testAdapter = StudentTestAdapter(requireContext(), testList){test ->
-            val action = StudentHomeFragmentDirections.actionstudentHomeFragmentToAttemptTestFragment(test.testId)
+            val testId = test.testId
+            val status = getStatusForTestId(testId)
+            val action = if(status){
+                StudentHomeFragmentDirections.actionStudentHomeFragmentToViewMarksFragment(test.testId)
+            }else{
+                StudentHomeFragmentDirections.actionstudentHomeFragmentToAttemptTestFragment(test.testId)
+            }
             findNavController().navigate(action)
         }
 
@@ -102,5 +109,21 @@ class StudentHomeFragment : Fragment() {
                 Log.d("StudentHomeFragment", "$error")
             }
         })
+    }
+
+    private fun getStatusForTestId(testId: String): Boolean{
+        val studentId = Prefs.getUID(requireContext())
+        val test = testList.find { it.testId == testId }
+        if(test != null){
+            val assignedTo = test.assignedTo.find { it.studentId == studentId }
+            if(assignedTo != null){
+                return if(assignedTo.hasAttempted){
+                    true
+                }else{
+                    false
+                }
+            }
+        }
+        return false
     }
 }

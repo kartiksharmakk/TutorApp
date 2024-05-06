@@ -79,5 +79,6 @@ dependencies {
     implementation("com.facebook.shimmer:shimmer:0.5.0")
     implementation("org.greenrobot:eventbus:3.3.1")
     implementation("com.google.code.gson:gson:2.10.1")
+   // implementation("com.github.quickpermissions:quickpermissions-kotlin:0.4.0")
 
 }
