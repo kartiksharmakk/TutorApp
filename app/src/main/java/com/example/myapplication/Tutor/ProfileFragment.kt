@@ -78,12 +78,8 @@ class ProfileFragment : Fragment() {
             imgEditImageProfile.setOnClickListener {
                 checkPermission()
             }
-            val tutorStatsHelper = TutorStatsHelper(requireContext()){counts ->
-                txtTestCount.text = counts.testCount.toString()
-                tctGroupCount.text = counts.groupCount.toString()
-                Log.d("ProfileFragment","TestCount: ${counts.testCount}\nGroupCount: ${counts.groupCount}")
-            }
-            tutorStatsHelper.getTutorStats()
+            txtTestCount.text = Prefs.getTestCount(requireContext()).toString()
+            tctGroupCount.text = Prefs.getGroupCount(requireContext()).toString()
             txtGenerateQR.setOnClickListener {
                 showQR(qrCodeBitmap!!)
             }

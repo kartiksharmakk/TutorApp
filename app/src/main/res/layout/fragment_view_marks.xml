@@ -136,6 +136,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 android:progressTint="@color/yellow"
                 android:numStars="5"
+                android:isIndicator="true"
                 app:layout_constraintTop_toBottomOf="@+id/textView44" />
 
             <TextView

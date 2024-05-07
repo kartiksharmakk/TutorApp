@@ -54,7 +54,7 @@ class ViewMarksFragment : Fragment() {
                             val percentage = (marksObtained*100)/totalMarks
                             binding.txtPercentage.text = "${percentage}%"
                             binding.ratingBar.max = 5
-                            binding.ratingBar.stepSize = 1f
+                            binding.ratingBar.stepSize = 0.5f
                             binding.ratingBar.rating = percentage.toFloat()/20
                             getRemarksAndImage(percentage)
                         }

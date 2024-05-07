@@ -78,6 +78,9 @@ class ProfileFragment : Fragment() {
             imgEditImageStudentProfile.setOnClickListener {
                 checkPermission()
             }
+            txtTestAttemptedCount.text = Prefs.getAttemptedTestCount(requireContext()).toString()
+            txtStudentTestCount.text = Prefs.getAllotedTestCount(requireContext()).toString()
+
             txtGenerateQR.setOnClickListener {
                 showQR(qrCodeBitmap!!)
             }

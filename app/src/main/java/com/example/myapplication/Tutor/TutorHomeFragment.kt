@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.myapplication.Adapter.TutorGroupAdapter
 import com.example.myapplication.Adapter.TutorTestAdapter
@@ -44,7 +45,8 @@ class TutorHomeFragment : Fragment() {
         groupList = mutableListOf()
         testList = mutableListOf()
         groupAdapter = TutorGroupAdapter(requireContext(), groupList){group ->
-            //Navigation with group id in bundles
+            val action = TutorHomeFragmentDirections.actionTutorHomeFragmentToViewGroupDetailsFragment(group.groupId)
+            findNavController().navigate(action)
         }
         testAdapter = TutorTestAdapter(requireContext(), testList){test ->
             //Navigate with test is in bundles
@@ -70,6 +72,7 @@ class TutorHomeFragment : Fragment() {
                         groupList.add(it)
                     }
                 }
+                Prefs.saveGroupCount(requireContext(),groupList.size)
                 groupAdapter.notifyDataSetChanged()
             }
 
@@ -92,6 +95,7 @@ class TutorHomeFragment : Fragment() {
                         testList.add(it)
                     }
                 }
+                Prefs.saveTestCount(requireContext(), testList.size)
                 testAdapter.notifyDataSetChanged()
             }
 

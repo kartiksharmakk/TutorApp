@@ -39,5 +39,19 @@
         android:name="com.example.myapplication.Tutor.AllotTestFragment"
         android:label="AllotTest"
         tools:layout="@layout/fragment_allot_test"/>
+    <fragment
+        android:id="@+id/viewGroupDetailsFragment"
+        android:name="com.example.myapplication.Student.GroupDetailsFragment"
+        android:label="GroupDetails"
+        tools:layout="@layout/fragment_group_details">
+        <argument
+            android:name="groupId"
+            app:argType="string"/>
+    </fragment>
+
+    <action
+        android:id="@+id/actionTutorHomeFragmentToViewGroupDetailsFragment"
+        app:destination="@id/viewGroupDetailsFragment"
+        />
 
 </navigation>

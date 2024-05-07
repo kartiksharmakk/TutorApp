@@ -17,6 +17,10 @@ object Prefs {
     private const val KEY_LOGGED_IN = "loggedIn"
     private const val VERIFICATION_ID_KEY = "verificationId"
     private const val DEVICE_TOKEN = "device_token"
+    private const val TEST_COUNT = "test_count"
+    private const val GROUP_COUNT = "group_count"
+    private const val ALLOTED_TEST_COUNT = "alloted_test_count"
+    private const val ATTEMPTED_TEST_COUNT = "attempted_test_count"
 
 
     var username: String
@@ -84,6 +88,34 @@ object Prefs {
     }
     fun getDeviceToken(context: Context): String?{
         return getPrefs(context).getString(DEVICE_TOKEN, null)
+    }
+
+    fun saveTestCount(context: Context, count: Int){
+        getPrefs(context).edit().putInt(TEST_COUNT, count).apply()
+    }
+    fun getTestCount(context: Context): Int{
+        return getPrefs(context).getInt(TEST_COUNT,0)
+    }
+
+    fun saveGroupCount(context: Context, count: Int){
+        getPrefs(context).edit().putInt(GROUP_COUNT, count).apply()
+    }
+    fun getGroupCount(context: Context): Int{
+        return getPrefs(context).getInt(GROUP_COUNT,0)
+    }
+
+    fun saveAllotedTestCount(context: Context, count: Int){
+        getPrefs(context).edit().putInt(ALLOTED_TEST_COUNT, count).apply()
+    }
+    fun getAllotedTestCount(context: Context): Int{
+        return getPrefs(context).getInt(ALLOTED_TEST_COUNT,0)
+    }
+
+    fun saveAttemptedTestCount(context: Context, count: Int){
+        getPrefs(context).edit().putInt(ATTEMPTED_TEST_COUNT, count).apply()
+    }
+    fun getAttemptedTestCount(context: Context): Int{
+        return getPrefs(context).getInt(ATTEMPTED_TEST_COUNT,0)
     }
 
     fun clearPrefs() {

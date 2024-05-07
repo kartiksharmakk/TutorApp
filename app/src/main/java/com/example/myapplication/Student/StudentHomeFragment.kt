@@ -94,14 +94,20 @@ class StudentHomeFragment : Fragment() {
         testReference.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 testList.clear()
+                var completed = 0
                 for (testSnapshot in snapshot.children) {
                     val test = testSnapshot.getValue(DataModel.Test::class.java)
                     test?.let {
                         if (it.assignedTo.any { assignedTo -> assignedTo.studentId == uid }) {
+                            if(it.assignedTo.any { x -> x.hasAttempted == true }){
+                                completed++
+                            }
                             testList.add(it)
                         }
                     }
                 }
+                Prefs.saveAttemptedTestCount(requireContext(), completed)
+                Prefs.saveAllotedTestCount(requireContext(),testList.size)
                 testAdapter.notifyDataSetChanged()
             }
 
