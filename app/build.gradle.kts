@@ -80,5 +80,6 @@ dependencies {
     implementation("org.greenrobot:eventbus:3.3.1")
     implementation("com.google.code.gson:gson:2.10.1")
    // implementation("com.github.quickpermissions:quickpermissions-kotlin:0.4.0")
+    implementation("com.journeyapps:zxing-android-embedded:4.2.0")
 
 }

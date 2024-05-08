@@ -25,6 +25,7 @@
         android:layout_height="45dp"
         android:layout_marginEnd="16dp"
         android:src="@drawable/search"
+        android:visibility="invisible"
         app:layout_constraintEnd_toStartOf="@+id/imageView5"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -97,7 +98,11 @@
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
-
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:src="@drawable/uplift"
+                        android:scaleType="fitXY"/>
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </androidx.cardview.widget.CardView>
 

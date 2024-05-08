@@ -21,8 +21,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageView
 import android.widget.PopupMenu
 import android.widget.TextView
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
@@ -34,6 +36,7 @@ import com.example.myapplication.Functions.CommonFunctions.getToastShort
 import com.example.myapplication.R
 import com.example.myapplication.databinding.FragmentProfileBinding
 import com.facebook.shimmer.Shimmer
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
@@ -58,6 +61,7 @@ class ProfileFragment : Fragment() {
     lateinit var firebaseDatabase: FirebaseDatabase
     lateinit var databaseReference: DatabaseReference
     private var isVisible = false
+    private var bottomSheetDialog: BottomSheetDialog? = null
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -70,6 +74,7 @@ class ProfileFragment : Fragment() {
         val qrCodeBitmap = generateQRCode(uid!!)
         getAboutSection()
         binding.apply {
+            bottomSheetLayout.clBottomSheet.visibility = View.GONE
             val name = Prefs.getUsername(requireContext())
             txtNameProfile.setText(name)
             imgOptionsProfile.setOnClickListener { view->
@@ -94,6 +99,7 @@ class ProfileFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         getDefaultProfileImage()
+        checkQRScanResult()
     }
 
     override fun onResume() {
@@ -462,6 +468,53 @@ class ProfileFragment : Fragment() {
         }catch (e: Exception){
             getToastShort(requireContext(),"Error: ${e.message}")
         }
+    }
+
+    private fun checkQRScanResult() {
+        val result = arguments?.getString("uid")
+        result?.let { uid ->
+            if (uid.isNotEmpty()) {
+                showBottomSheet(result)
+            }
+        }
+    }
+
+    private fun showBottomSheet(uid: String) {
+        binding.bottomSheetLayout.clBottomSheet.visibility = View.VISIBLE
+        val bottomSheetView = layoutInflater.inflate(R.layout.bottom_sheet_layout, null)
+        val bottomSheetDialog = BottomSheetDialog(requireContext())
+        bottomSheetDialog.setContentView(bottomSheetView)
+        bottomSheetDialog.show()
+        val userRef = Firebase.database.getReference("User Details")
+        val query = userRef.orderByChild("uid").equalTo(uid)
+        query.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                if(snapshot.exists()){
+                    for(userSnapshot in snapshot.children){
+                        val userData = userSnapshot.getValue(DataModel.UserCredentials::class.java)!!
+                        val close: ImageView = bottomSheetView.findViewById(R.id.imgClose)
+                        val img : ImageView= bottomSheetView.findViewById(R.id.imgBottomSheet)
+                        val name: TextView = bottomSheetView.findViewById(R.id.txtBottomSheet)
+                        name.text = userData.name
+                        Glide.with(requireContext())
+                            .load(userData.image)
+                            .into(img)
+                        close.setOnClickListener {
+                            bottomSheetDialog?.dismiss()
+                            binding.bottomSheetLayout.clBottomSheet.visibility = View.GONE
+                        }
+                    }
+                }else{
+                    Toast.makeText(requireContext(),"No user found, Try again", Toast.LENGTH_SHORT).show()
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                TODO("Not yet implemented")
+            }
+
+        })
+
     }
     companion object{
         const val STORAGE_PERMISSION_REQUEST_CODE = 2001

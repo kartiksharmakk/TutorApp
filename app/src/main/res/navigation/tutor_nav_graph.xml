@@ -23,7 +23,11 @@
         android:id="@+id/tutor_profile"
         android:name="com.example.myapplication.Tutor.ProfileFragment"
         android:label="TutorProfile"
-        tools:layout="@layout/fragment_profile"/>
+        tools:layout="@layout/fragment_profile">
+        <argument
+            android:name="uid"
+            app:argType="string"/>
+    </fragment>
     <fragment
         android:id="@+id/addStudents"
         android:name="com.example.myapplication.Tutor.StudentListFragment"
@@ -48,7 +52,14 @@
             android:name="groupId"
             app:argType="string"/>
     </fragment>
-
+    <fragment
+        android:id="@+id/qrCodeScannerFragment"
+        android:name="com.example.myapplication.Tutor.QRCodeScannerFragment"
+        tools:layout="@layout/fragment_q_r_code_scanner"
+        android:label="QRCodeScanner"/>
+    <action
+        android:id="@+id/actionQRCodeScannerToTutorProfile"
+        app:destination="@id/tutor_profile"/>
     <action
         android:id="@+id/actionTutorHomeFragmentToViewGroupDetailsFragment"
         app:destination="@id/viewGroupDetailsFragment"
