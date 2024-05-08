@@ -120,7 +120,7 @@ class AllotTestFragment : Fragment() {
             }
             viewModel.saveTestAndQuestions(testId,testName,finalQuestionsListArray,tutorUid,finalStudentIdsListArray, totalMarks)
             alertDialog.dismiss()
-            findNavController().popBackStack()
+            findNavController().navigate(R.id.tutorHomeFragment)
         }
         btnCancel.setOnClickListener {
             alertDialog.dismiss()

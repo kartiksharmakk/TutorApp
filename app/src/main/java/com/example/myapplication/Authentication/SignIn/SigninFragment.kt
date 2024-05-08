@@ -124,8 +124,10 @@ class SigninFragment : Fragment() {
                         isStudent { student ->
                             if(student){
                                 startActivity(intentStudent)
+                                requireActivity().finish()
                             }else{
                                 startActivity(intentTutor)
+                                requireActivity().finish()
                             }
                         }
                         findNavController().popBackStack()

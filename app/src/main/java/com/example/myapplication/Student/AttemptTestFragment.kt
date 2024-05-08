@@ -33,7 +33,7 @@ class AttemptTestFragment : Fragment() {
         adapter = AttemptTestAdapter(requireContext(), questionsList)
         binding.apply {
             imgBackAttemptTest.setOnClickListener{
-                findNavController().popBackStack()
+                findNavController().navigate(R.id.tutorHomeFragment)
             }
             rvAttemptTest.apply {
                 layoutManager = LinearLayoutManager(requireContext())
